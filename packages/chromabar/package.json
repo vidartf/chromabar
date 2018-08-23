@@ -1,0 +1,39 @@
+{
+  "name": "chromabar",
+  "version": "0.1.0",
+  "description": "A colorbar for d3 color scales",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --project src",
+    "clean": "rimraf lib",
+    "prepare": "npm run build",
+    "test": "npm run test:firefox",
+    "test:chrome": "karma start --browsers=Chrome tests/karma.conf.js",
+    "test:debug": "karma start --browsers=Chrome --singleRun=false --debug=true tests/karma.conf.js",
+    "test:firefox": "karma start --browsers=Firefox tests/karma.conf.js",
+    "test:ie": "karma start --browsers=IE tests/karma.conf.js",
+    "watch": "tsc -w --project src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vidartf/ipycolorbar.git"
+  },
+  "author": "Vidar Tonaas Fauske",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/vidartf/ipycolorbar/issues"
+  },
+  "homepage": "https://github.com/vidartf/ipycolorbar#readme",
+  "devDependencies": {
+    "@types/d3-axis": "^1.0.10",
+    "@types/d3-scale": "^2.0.1",
+    "@types/d3-selection": "^1.3.2",
+    "rimraf": "^2.6.2",
+    "typescript": "^3.0.1"
+  },
+  "dependencies": {
+    "@types/d3-array": "^1.2.1",
+    "d3-array": "^1.2.1",
+    "d3-axis": "^1.0.9"
+  }
+}
