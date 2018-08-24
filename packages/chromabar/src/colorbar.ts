@@ -1,6 +1,6 @@
 
 import {
-  ScaleContinuousNumeric, scaleLinear
+  ScaleContinuousNumeric
 } from 'd3-scale';
 
 import {
@@ -10,6 +10,13 @@ import {
 import { range } from 'd3-array';
 
 import { SelectionContext, TransitionContext } from './common';
+
+import { Selection } from 'd3-selection';
+
+
+export type Orientation = 'horizontal' | 'vertical';
+
+export type ColorScale = ScaleContinuousNumeric<string, number>;
 
 
 export interface ColorbarAxisScale extends AxisScale<number> {
@@ -40,20 +47,20 @@ export interface ColorBar {
   /**
    * Gets the current scale used for color lookup.
    */
-  scale(): ScaleContinuousNumeric<number, string>;
+  scale(): ColorScale;
 
   /**
    * Sets the scale and returns the color bar.
    *
    * @param scale The scale to be used for color lookup.
    */
-  scale(scale: ScaleContinuousNumeric<number, string>): this;
+  scale(scale: ColorScale): this;
+
+  orientation(): Orientation;
+  orientation(orientation: Orientation): this;
 
   breadth(): number;
   breadth(breadth: number): this;
-
-  borderThickness(): number;
-  borderThickness(borderThickness: number): this;
 
   axisScale(): ColorbarAxisScale;
   axisScale(value: ColorbarAxisScale): this;
@@ -61,50 +68,62 @@ export interface ColorBar {
 }
 
 
-export function colorbar(): ColorBar {
+export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): ColorBar {
 
-  let scale: ScaleContinuousNumeric<number, string>;
-  let axisScale: ColorbarAxisScale;
+  let orientation: Orientation = 'vertical';
   let breadth = 30;
   let borderThickness = 1;
 
 
   const colorbar: any = (selection: SelectionContext): void => {
 
+    const sel = selection as Selection<SVGGElement, any, any, any>;
     // Create gradient if missing
 
-    let rects = selection.selectAll("rect")
-      .data(range(axisScale.range[axisScale.range.length - 1]));
+    const length = axisScale.domain()[axisScale.domain().length - 1] + 1;
 
-    rects.enter().append("rect")
-      .style("stroke-thickness", 0);
+    // Then draw rects with colors
+    let rects = sel.selectAll('rect.gradient')
+      .data(range(length));
 
-    rects.exit()
-      .remove();
+    rects = rects.merge(rects.enter().append('rect')
+      .attr('stroke-width', 0)
+      .attr('class', 'gradient'));
 
+    rects.exit().remove();
+
+    if (orientation === 'horizontal') {
+      rects
+        .attr('width', 2)
+        .attr('height', breadth)
+        .attr('x', d => d)
+        .attr('y', 0)
+    } else {
+      rects
+        .attr('height', 2)
+        .attr('width', breadth)
+        .attr('y', d => length - d - 1)
+        .attr('x', 0)
+    }
     rects
-      .attr(orientation === 'horizontal' ? 'width' : 'height', 2)
-      .attr(orientation === 'horizontal' ? 'height' : 'width', breadth)
-      .attr(orientation === 'horizontal' ? 'x' : 'y', d => d)
-      .attr(orientation === 'horizontal' ? 'y' : 'x', 0)
-      .style("fill", d => scale(axisScale(d)!));
+      .attr('fill', d => scale(axisScale(d)!));
 
   };
 
-  colorbar.scale = function(_) {
+  colorbar.scale = function(_: any) {
     return arguments.length ? (scale = _, colorbar) : scale;
   };
 
-  colorbar.axisScale = function(_) {
+  colorbar.axisScale = function(_: any) {
     return arguments.length ? (axisScale = _, colorbar) : axisScale;
   };
 
-  colorbar.breadth = function(_) {
-    return arguments.length ? (breadth = _, colorbar) : breadth;
+  colorbar.orientation = function(_) {
+    return arguments.length ? (orientation = _, colorbar) : orientation;
   };
 
-  colorbar.borderThickness = function(_) {
-    return arguments.length ? (borderThickness = _, colorbar) : borderThickness;
+  colorbar.breadth = function(_: any) {
+    return arguments.length ? (breadth = _, colorbar) : breadth;
   };
 
   return colorbar;
