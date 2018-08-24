@@ -4,7 +4,7 @@ import {
 } from 'd3-scale';
 
 import {
-  Axis, AxisScale, axisLeft, axisRight, axisTop, axisBottom
+  Axis, AxisScale, axisLeft, axisRight, axisTop, axisBottom, AxisDomain
 } from 'd3-axis';
 
 import { colorbar, ColorbarAxisScale, Orientation, ColorScale } from './colorbar';
@@ -18,7 +18,7 @@ const slice = Array.prototype.slice;
 
 
 
-export type AxisScaleFactory = () => ColorbarAxisScale;
+export type AxisScaleFactory<Domain extends AxisDomain> = () => ColorbarAxisScale<Domain>;
 
 /**
  * Sides of a box.
@@ -36,7 +36,7 @@ export type Inherited = Pick<Axis<number>, Exclude<keyof Axis<number>, keyof {
 }>>
 
 
-export interface ChromaBar extends Inherited {
+export interface ChromaBar<Domain extends AxisDomain> extends Inherited {
 
   /**
    * Render the color bar to the given context.
@@ -55,14 +55,14 @@ export interface ChromaBar extends Inherited {
   /**
    * Gets the current scale used for color lookup.
    */
-  scale(): ColorScale;
+  scale(): ColorScale<Domain>;
 
   /**
    * Sets the scale and returns the color bar.
    *
    * @param scale The scale to be used for color lookup.
    */
-  scale(scale: ColorScale): this;
+  scale(scale: ColorScale<Domain>): this;
 
   orientation(): Orientation;
   orientation(orientation: Orientation): this;
@@ -91,11 +91,11 @@ export interface ChromaBar extends Inherited {
 }
 
 
-function constructAxis(
+function constructAxis<Domain extends AxisDomain>(
   orientation: Orientation,
   side: Side,
-  axisScale: AxisScale<number>
-): Axis<number> {
+  axisScale: AxisScale<Domain>
+): Axis<Domain> {
   // TODO: Determine RTL/LTR using context
   //const dir = context.attr('dir');
   //if (side === 'before') side = 'topleft';
@@ -122,10 +122,8 @@ function constructAxis(
   }
 }
 
+export function chromabar<Domain extends AxisDomain>(scale: ColorScale<Domain>): ChromaBar<Domain> {
 
-export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory = scaleLinear): ChromaBar {
-
-  const axisScale: ColorbarAxisScale = axisScaleFactory();
   let orientation: Orientation = 'vertical';
   let side: Side = 'bottomright';
   let length = 100;
@@ -150,9 +148,9 @@ export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory 
     const xdim = horizontal ? length + 1 : breadth;
     const ydim = horizontal ? breadth : length + 1;
 
-    axisScale
-      .domain(scale.domain())
-      .range([0, length]);
+    // Copy, and switch type by changing range (color -> pixels)
+    const axisScale = (scale.copy() as any)
+      .range([0, length]) as ColorbarAxisScale<Domain>;
 
     let axisFn = constructAxis(orientation, side, axisScale)
       .tickArguments(tickArguments)

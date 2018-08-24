@@ -21,7 +21,7 @@ import {
 describe('colorbar', () => {
 
   it('should have expected defaults', () => {
-    const s = scaleLinear<string, number>();
+    const s = scaleLinear<string, string>();
     const a = scaleLinear();
     const b = colorbar(s, a);
 
@@ -32,7 +32,7 @@ describe('colorbar', () => {
   });
 
   it('should produce the expected results', () => {
-    const s = scaleLinear<string, number>()
+    const s = scaleLinear<string, string>()
       .range(['red', 'blue']);
     const a = scaleLinear()
       .range([0, 9]);  // 10 px
@@ -61,7 +61,7 @@ describe('colorbar', () => {
   });
 
   it('should produce the expected results when horizontal', () => {
-    const s = scaleLinear<string, number>()
+    const s = scaleLinear<string, string>()
       .range(['red', 'blue']);
     const a = scaleLinear()
       .range([0, 9]);  // 10 px

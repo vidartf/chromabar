@@ -21,8 +21,7 @@ import {
 describe('chromabar', () => {
 
   it('should have expected defaults', () => {
-    const s = scaleLinear<string, number>();
-    const a = scaleLinear();
+    const s = scaleLinear<string, string>();
     const b = chromabar(s);
 
     expect(b.scale()).to.be(s);
@@ -41,7 +40,7 @@ describe('chromabar', () => {
   });
 
   it('should produce the expected results', () => {
-    const s = scaleLinear<string, number>()
+    const s = scaleLinear<string, string>()
       .range(['red', 'blue']);
     const b = chromabar(s)
       .barLength(10)
@@ -86,7 +85,7 @@ describe('chromabar', () => {
   });
 
   it('should produce the expected results when horizontal', () => {
-    const s = scaleLinear<string, number>()
+    const s = scaleLinear<string, string>()
       .range(['red', 'blue']);
     const b = chromabar(s)
       .orientation('horizontal')
@@ -134,7 +133,7 @@ describe('chromabar', () => {
   });
 
   it('should produce the expected results when axis on left side', () => {
-    const s = scaleLinear<string, number>()
+    const s = scaleLinear<string, string>()
       .range(['red', 'blue']);
     const b = chromabar(s)
       .orientation('horizontal')
