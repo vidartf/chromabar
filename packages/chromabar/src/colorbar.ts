@@ -25,6 +25,8 @@ export interface ColorbarAxisScale extends AxisScale<number> {
 
   range(): number[];
   range(value: number[]): this;
+
+  invert(value: number | { valueOf(): number }): number;
 }
 
 
@@ -72,7 +74,6 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
 
   let orientation: Orientation = 'vertical';
   let breadth = 30;
-  let borderThickness = 1;
 
 
   const colorbar: any = (selection: SelectionContext): void => {
@@ -80,11 +81,11 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
     const sel = selection as Selection<SVGGElement, any, any, any>;
     // Create gradient if missing
 
-    const length = axisScale.domain()[axisScale.domain().length - 1] + 1;
+    const length = axisScale.range()[axisScale.range().length - 1];
 
     // Then draw rects with colors
     let rects = sel.selectAll('rect.gradient')
-      .data(range(length));
+      .data(range(length + 1));
 
     rects = rects.merge(rects.enter().append('rect')
       .attr('stroke-width', 0)
@@ -92,21 +93,26 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
 
     rects.exit().remove();
 
+    rects
+      .attr('fill', d => scale(axisScale.invert(d)!));
+
     if (orientation === 'horizontal') {
       rects
         .attr('width', 2)
         .attr('height', breadth)
         .attr('x', d => d)
         .attr('y', 0)
+      sel.select('rect.gradient:last-of-type')
+        .attr('width', 1)
     } else {
       rects
         .attr('height', 2)
         .attr('width', breadth)
-        .attr('y', d => length - d - 1)
+        .attr('y', d => length - d)
         .attr('x', 0)
+      sel.select('rect.gradient:first-of-type')
+        .attr('height', 1)
     }
-    rects
-      .attr('fill', d => scale(axisScale(d)!));
 
   };
 

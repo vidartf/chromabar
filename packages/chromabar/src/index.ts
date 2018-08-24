@@ -67,11 +67,11 @@ export interface ChromaBar extends Inherited {
   orientation(): Orientation;
   orientation(orientation: Orientation): this;
 
-  side(): number;
-  side(value: number): this;
+  side(): Side;
+  side(value: Side): this;
 
-  length(): number;
-  length(length: number): this;
+  barLength(): number;
+  barLength(length: number): this;
 
   breadth(): number;
   breadth(breadth: number): this;
@@ -81,6 +81,12 @@ export interface ChromaBar extends Inherited {
 
   title(): string | null;
   title(title: string | null): this;
+
+  titlePadding(): number;
+  titlePadding(padding: number): this;
+
+  axisPadding(): number | null;
+  axisPadding(padding: number | null): this;
 
 }
 
@@ -95,7 +101,7 @@ function constructAxis(
   //if (side === 'before') side = 'topleft';
   //else if (side === 'after') side = 'bottomright';
 
-  if (orientation === 'horizontal') {
+  if (orientation === 'vertical') {
     if (side === 'topleft') {
       return axisLeft(axisScale);
     } else if (side === 'bottomright') {
@@ -103,7 +109,7 @@ function constructAxis(
     } else {
       throw new Error(`Invalid colorbar side "${side}"`);
     }
-  } else if (orientation === 'vertical') {
+  } else if (orientation === 'horizontal') {
     if (side === 'topleft') {
       return axisTop(axisScale);
     } else if (side === 'bottomright') {
@@ -132,17 +138,21 @@ export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory 
   let tickSizeOuter = 6;
   let tickPadding = 3;
   let title: string | null = null;
+  let titlePadding: number = 30;
+  let axisPadding: number | null = null;
 
 
   const chromabar: any = (selection: SelectionContext): void => {
     const sel = selection as Selection<SVGGElement, any, any, any>;
 
-    const xdim = orientation === 'horizontal' ? length + 1 : breadth;
-    const ydim = orientation === 'horizontal' ? breadth : length + 1;
+    const horizontal = orientation === 'horizontal';
+
+    const xdim = horizontal ? length + 1 : breadth;
+    const ydim = horizontal ? breadth : length + 1;
 
     axisScale
-      .domain([0, length])
-      .range(scale.domain());
+      .domain(scale.domain())
+      .range([0, length]);
 
     let axisFn = constructAxis(orientation, side, axisScale)
       .tickArguments(tickArguments)
@@ -153,7 +163,8 @@ export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory 
     if (tickFormat !== null) axisFn.tickFormat(tickFormat);
 
     let colorbarFn = colorbar(scale, axisScale)
-      .breadth(breadth);
+      .breadth(breadth)
+      .orientation(orientation);
 
 
     // Add color bar
@@ -171,7 +182,7 @@ export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory 
     let border = colorbarGroup.selectAll('rect.border')
       .data([null]);
 
-    border = border.merge(border.enter().append('rect')
+    border = border.merge(border.enter().insert('rect', 'rect')
       .attr('class', 'border')
       .attr('fill', 'transparent')
       .attr('stroke', 'currentColor')
@@ -200,104 +211,92 @@ export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory 
     let titleGroup = sel.selectAll('g.title')
       .data(title ? [null] : []);
 
-    let titleEnter = titleGroup.enter().append('g')
-      .attr('class', 'title');
-    titleEnter.append('text')
-      .attr('class', 'title')
-      .style("text-anchor", "middle")
-      .attr("fill", "currentColor");
-    titleGroup = titleGroup.merge(titleEnter);
+    titleGroup = titleGroup.merge(titleGroup.enter().append('g')
+      .attr('class', 'title'));
 
     titleGroup.exit().remove();
 
-    let titleNode = titleGroup.selectAll('text.title')
-      .data(title ? [title] : []);
+    let titleNode = titleGroup.select('text.title');
 
-    titleNode = titleNode.merge(titleNode.enter().append('text'));
-
-    titleNode.exit().remove();
+    titleNode = titleNode.merge(titleNode.enter().append('text')
+      .attr('class', 'title')
+      .style('text-anchor', 'middle')
+      .attr('fill', 'currentColor'))
 
     titleNode
-      .text(d => d);
+      .text(d => d)
+      .attr('transform', function() {
+        const bbox = (this as any).getBBox();
+        return `rotate(${
+          horizontal ? 0 : -90
+        })`;
+      });
 
 
     // Calculate translations
 
+    let offset = 0;
+    let axisDim = axisPadding || (horizontal ? 30 : 100);
+    let titleDim = title ? titlePadding : 0;
+
     if (side === 'topleft') {
+      // Add some margin:
+      offset += titleDim;
+
       // Order: title, axis, colorbar (with border)
-      let titlePadding = 0;
       titleGroup
         .attr('transform', function(d) {
-          const bbox = (this as any).getBBox();
-          titlePadding = orientation === 'horizontal'
-            ? bbox.height * 2
-            : bbox.width * 2;
           return `translate(${
-            orientation === 'horizontal'
-              ? xdim / 2
-              : titlePadding
-          }, ${
-            orientation === 'horizontal'
-              ? titlePadding
-              : ydim / 2
-          })rotate(${
-            orientation === 'horizontal' ? 0 : -90
-          })`;
+              horizontal ? borderThickness : offset
+            }, ${
+              horizontal ? offset : borderThickness
+            })`;
         });
 
-      let axisPadding = 0;
+      offset += axisDim;
+
       axisGroup
         .attr('transform', function(d) {
-          const bbox = (this as any).getBBox();
-          if (orientation === 'horizontal') {
-            axisPadding = Math.max(axisPadding, bbox.width);
-          } else {
-            axisPadding = Math.max(axisPadding, bbox.height);
-          }
           return `translate(${
-            orientation === 'horizontal' ? 0 : titlePadding
+            horizontal ? borderThickness : offset
           }, ${
-            orientation === 'horizontal' ? titlePadding : 0
+            horizontal ? offset : borderThickness
           })`;
         });
 
-      axisPadding += 10;
+      offset += borderThickness;
 
       colorbarGroup
-        .attr('transform', `translate(${borderThickness + (
-            orientation === 'horizontal' ? 0 : titlePadding + axisPadding
-          )}, ${borderThickness + (
-            orientation === 'horizontal' ? titlePadding + axisPadding : 0
-          )})`);
+        .attr('transform', `translate(${
+            horizontal ? borderThickness : offset
+          }, ${
+            horizontal ? offset : borderThickness
+          })`);
     } else {
       // Order: colorbar (with border), axis, title
       colorbarGroup
-        .attr('transform', `translate(${borderThickness}, ${borderThickness})`);
-
-      let axisPadding = 0;
-      axisGroup
-        .attr("transform", function(d) {
-          const bbox = (this as any).getBBox();
-          return `translate(${
-            xdim + borderThickness
-          }, ${
-            ydim + borderThickness
-          })`;
+        .attr('transform', function() {
+          return `translate(${borderThickness}, ${borderThickness})`
         });
+
+      offset += borderThickness + breadth;
+
+      axisGroup
+        .attr("transform", `translate(${
+            horizontal ? borderThickness : offset
+          }, ${
+            horizontal ? offset : borderThickness
+          })`);
+
+      offset += axisDim;
 
       titleGroup
         .attr("transform", `translate(${
-            xdim + borderThickness
+            horizontal ? borderThickness : offset
           }, ${
-            ydim + borderThickness
+            horizontal ? offset : borderThickness
           })`);
     }
-
-      //.attr('transform', titleTransform)
-
-    // Make room for the border:
-    colorbarGroup
-      .attr('transform', `translate(${borderThickness}, ${borderThickness})`);
   };
 
   chromabar.scale = function(_) {
@@ -312,7 +311,7 @@ export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory 
     return arguments.length ? (side = _, chromabar) : side;
   };
 
-  chromabar.length = function(_) {
+  chromabar.barLength = function(_) {
     return arguments.length ? (length = _, chromabar) : length;
   };
 
@@ -326,6 +325,14 @@ export function chromabar(scale: ColorScale, axisScaleFactory: AxisScaleFactory 
 
   chromabar.title = function(_) {
     return arguments.length ? (title = _, chromabar) : title;
+  };
+
+  chromabar.titlePadding = function(_) {
+    return arguments.length ? (titlePadding = _, chromabar) : titlePadding;
+  };
+
+  chromabar.axisPadding = function(_) {
+    return arguments.length ? (axisPadding = _, chromabar) : axisPadding;
   };
 
 
