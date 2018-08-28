@@ -34,7 +34,7 @@ module.exports = [
     entry: './src/index.ts',
     output: {
       filename: 'embed-bundle.js',
-      path: __dirname + '/docs/source/_static',
+      path: path.resolve(__dirname, '..', '..', 'docs', 'source', '_static'),
       library: "jupyter-colorbar",
       libraryTarget: 'amd'
     },

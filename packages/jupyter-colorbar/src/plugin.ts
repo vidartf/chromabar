@@ -14,7 +14,7 @@ import {
  } from '@jupyter-widgets/base';
 
 import {
-  ExampleModel, ExampleView
+  ColorBarModel, ColorBarView
 } from './widget';
 
 import {
@@ -45,8 +45,8 @@ function activateWidgetExtension(app: Application<Widget>, registry: IJupyterWid
     name: 'jupyter-colorbar',
     version: EXTENSION_SPEC_VERSION,
     exports: {
-      ExampleModel: ExampleModel,
-      ExampleView: ExampleView
+      ExampleModel: ColorBarModel,
+      ExampleView: ColorBarView
     }
   });
 }
