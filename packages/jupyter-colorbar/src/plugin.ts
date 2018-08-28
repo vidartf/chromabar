@@ -45,8 +45,8 @@ function activateWidgetExtension(app: Application<Widget>, registry: IJupyterWid
     name: 'jupyter-colorbar',
     version: EXTENSION_SPEC_VERSION,
     exports: {
-      ExampleModel: ColorBarModel,
-      ExampleView: ColorBarView
+      ColorBarModel: ColorBarModel,
+      ColorBarView: ColorBarView
     }
   });
 }

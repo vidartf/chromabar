@@ -16,11 +16,11 @@ import { Selection } from 'd3-selection';
 
 export type Orientation = 'horizontal' | 'vertical';
 
-export interface ColorScale<Domain extends AxisDomain> {
+export interface ColorScale {
   (value: number | { valueOf(): number }): string;
 
-  domain(): Domain[];
-  domain(domain: Array<Domain | { valueOf(): Domain }>): this;
+  domain(): AxisDomain[];
+  domain(domain: Array<AxisDomain | { valueOf(): AxisDomain }>): this;
 
   range(): string[];
   range(value: string[]): this;
@@ -34,10 +34,10 @@ export interface ColorScale<Domain extends AxisDomain> {
 };
 
 
-export interface ColorbarAxisScale<Domain extends AxisDomain> extends AxisScale<Domain> {
+export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
 
-  domain(): Domain[];
-  domain(value: Domain[]): this;
+  domain(): AxisDomain[];
+  domain(value: AxisDomain[]): this;
 
   range(): number[];
   range(value: number[]): this;
@@ -46,7 +46,7 @@ export interface ColorbarAxisScale<Domain extends AxisDomain> extends AxisScale<
 }
 
 
-export interface ColorBar<Domain extends AxisDomain> {
+export interface ColorBar {
 
   /**
    * Render the color bar to the given context.
@@ -65,14 +65,14 @@ export interface ColorBar<Domain extends AxisDomain> {
   /**
    * Gets the current scale used for color lookup.
    */
-  scale(): ColorScale<Domain>;
+  scale(): ColorScale;
 
   /**
    * Sets the scale and returns the color bar.
    *
    * @param scale The scale to be used for color lookup.
    */
-  scale(scale: ColorScale<Domain>): this;
+  scale(scale: ColorScale): this;
 
   /**
    * Gets the current orientation of the color bar.
@@ -103,7 +103,7 @@ export interface ColorBar<Domain extends AxisDomain> {
    *
    * The axis scale should map from the data domain to svg space.
    */
-  axisScale(): ColorbarAxisScale<Domain>;
+  axisScale(): ColorbarAxisScale;
 
   /**
    * Sets the current axis scale and returns the color bar.
@@ -112,12 +112,12 @@ export interface ColorBar<Domain extends AxisDomain> {
    *
    * @param breadth The axis scale to use.
    */
-  axisScale(value: ColorbarAxisScale<Domain>): this;
+  axisScale(value: ColorbarAxisScale): this;
 
 }
 
 
-export function colorbar<Domain extends AxisDomain>(scale: ColorScale<Domain>, axisScale: ColorbarAxisScale<Domain>): ColorBar<Domain> {
+export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): ColorBar {
 
   let orientation: Orientation = 'vertical';
   let breadth = 30;

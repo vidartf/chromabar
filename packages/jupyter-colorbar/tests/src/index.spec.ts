@@ -4,7 +4,7 @@
 import expect = require('expect.js');
 
 import {
-  // Add any needed widget imports here (or from controls)
+  WidgetModel
 } from '@jupyter-widgets/base';
 
 import {
@@ -12,25 +12,18 @@ import {
 } from './utils.spec';
 
 import {
-  ExampleModel, ExampleView
+  ColorBarModel, ColorBarView
 } from '../../src/'
 
 
-describe('Example', () => {
+describe('ColorBar', () => {
 
-  describe('ExampleModel', () => {
+  describe('ColorBarModel', () => {
 
     it('should be createable', () => {
-      let model = createTestModel(ExampleModel);
-      expect(model).to.be.an(ExampleModel);
-      expect(model.get('value')).to.be('Hello World');
-    });
-
-    it('should be createable with a value', () => {
-      let state = { value: 'Foo Bar!' }
-      let model = createTestModel(ExampleModel, state);
-      expect(model).to.be.an(ExampleModel);
-      expect(model.get('value')).to.be('Foo Bar!');
+      let model = createTestModel(ColorBarModel);
+      expect(model).to.be.an(ColorBarModel);
+      expect(model.get('colorbar')).to.be(null);
     });
 
   });

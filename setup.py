@@ -92,9 +92,10 @@ setup_args = dict(
             'pytest',
             'pytest-cov',
             'nbval',
+            'ipyscales'
         ],
         'examples': [
-            # Any requirements for the examples to run
+            'ipyscales',
         ],
         'docs': [
             'sphinx>=1.5',

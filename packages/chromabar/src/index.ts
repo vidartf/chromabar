@@ -18,8 +18,6 @@ const slice = Array.prototype.slice;
 
 
 
-export type AxisScaleFactory<Domain extends AxisDomain> = () => ColorbarAxisScale<Domain>;
-
 /**
  * Sides of a box.
  */
@@ -36,7 +34,7 @@ export type Inherited = Pick<Axis<number>, Exclude<keyof Axis<number>, keyof {
 }>>
 
 
-export interface ChromaBar<Domain extends AxisDomain> extends Inherited {
+export interface ChromaBar extends Inherited {
 
   /**
    * Render the color bar to the given context.
@@ -55,14 +53,14 @@ export interface ChromaBar<Domain extends AxisDomain> extends Inherited {
   /**
    * Gets the current scale used for color lookup.
    */
-  scale(): ColorScale<Domain>;
+  scale(): ColorScale;
 
   /**
    * Sets the scale and returns the color bar.
    *
    * @param scale The scale to be used for color lookup.
    */
-  scale(scale: ColorScale<Domain>): this;
+  scale(scale: ColorScale): this;
 
   orientation(): Orientation;
   orientation(orientation: Orientation): this;
@@ -122,7 +120,7 @@ function constructAxis<Domain extends AxisDomain>(
   }
 }
 
-export function chromabar<Domain extends AxisDomain>(scale: ColorScale<Domain>): ChromaBar<Domain> {
+export function chromabar(scale?: ColorScale): ChromaBar {
 
   let orientation: Orientation = 'vertical';
   let side: Side = 'bottomright';
@@ -141,6 +139,10 @@ export function chromabar<Domain extends AxisDomain>(scale: ColorScale<Domain>):
 
 
   const chromabar: any = (selection: SelectionContext): void => {
+    if (scale === undefined) {
+      scale = scaleLinear<string>()
+        .range(['black', 'white'])
+    }
     const sel = selection as Selection<SVGGElement, any, any, any>;
 
     const horizontal = orientation === 'horizontal';
@@ -149,8 +151,8 @@ export function chromabar<Domain extends AxisDomain>(scale: ColorScale<Domain>):
     const ydim = horizontal ? breadth : length + 1;
 
     // Copy, and switch type by changing range (color -> pixels)
-    const axisScale = (scale.copy() as any)
-      .range([0, length]) as ColorbarAxisScale<Domain>;
+    const axisScale = (scale!.copy() as any)
+      .range([0, length]) as ColorbarAxisScale;
 
     let axisFn = constructAxis(orientation, side, axisScale)
       .tickArguments(tickArguments)
@@ -160,7 +162,7 @@ export function chromabar<Domain extends AxisDomain>(scale: ColorScale<Domain>):
     if (tickValues !== null) axisFn.tickValues(tickValues);
     if (tickFormat !== null) axisFn.tickFormat(tickFormat);
 
-    let colorbarFn = colorbar(scale, axisScale)
+    let colorbarFn = colorbar(scale!, axisScale)
       .breadth(breadth)
       .orientation(orientation);
 

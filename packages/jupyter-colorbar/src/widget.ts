@@ -53,7 +53,9 @@ class ColorBarView extends DOMWidgetView {
   }
 
   value_changed() {
-    chromabar
-    this.el.textContent = this.model.get('value');
+    const barFunc = chromabar(this.model.get('colormap'));
+    let sel = select(this.el).selectAll('svg');
+    sel = sel.merge(sel.enter().append('svg'));
+    sel.call(barFunc);
   }
 }
