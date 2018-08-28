@@ -25,16 +25,16 @@ const EXTENSION_ID = 'jupyter-colorbar';
 
 
 /**
- * The example plugin.
+ * The color bar plugin.
  */
-const examplePlugin: IPlugin<Application<Widget>, void> = {
+const colorbarPlugin: IPlugin<Application<Widget>, void> = {
   id: EXTENSION_ID,
   requires: [IJupyterWidgetRegistry],
   activate: activateWidgetExtension,
   autoStart: true
 };
 
-export default examplePlugin;
+export default colorbarPlugin;
 
 
 /**

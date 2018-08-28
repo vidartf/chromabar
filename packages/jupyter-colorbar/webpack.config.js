@@ -1,3 +1,5 @@
+const path = require('path');
+
 // Custom webpack rules
 const rules = [
   { test: /\.ts$/, loader: 'ts-loader' },
@@ -13,7 +15,7 @@ module.exports = [
     entry: './src/index.ts',
     output: {
       filename: 'index.js',
-      path: __dirname + '/ipycolorbar/nbextension/static',
+      path: path.resolve(__dirname, '..', '..', 'ipycolorbar', 'nbextension', 'static'),
       libraryTarget: 'amd'
     },
     module: {

@@ -2,8 +2,15 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  DOMWidgetModel, DOMWidgetView, ISerializers
+  DOMWidgetModel, DOMWidgetView, ISerializers, unpack_models
 } from '@jupyter-widgets/base';
+
+import {
+  chromabar
+} from 'chromabar';
+
+
+import { select } from 'd3-selection';
 
 import {
   EXTENSION_SPEC_VERSION
@@ -11,41 +18,42 @@ import {
 
 
 export
-class ExampleModel extends DOMWidgetModel {
+class ColorBarModel extends DOMWidgetModel {
   defaults() {
     return {...super.defaults(),
-      _model_name: ExampleModel.model_name,
-      _model_module: ExampleModel.model_module,
-      _model_module_version: ExampleModel.model_module_version,
-      _view_name: ExampleModel.view_name,
-      _view_module: ExampleModel.view_module,
-      _view_module_version: ExampleModel.view_module_version,
-      value : 'Hello World'
+      _model_name: ColorBarModel.model_name,
+      _model_module: ColorBarModel.model_module,
+      _model_module_version: ColorBarModel.model_module_version,
+      _view_name: ColorBarModel.view_name,
+      _view_module: ColorBarModel.view_module,
+      _view_module_version: ColorBarModel.view_module_version,
+      colormap : null
     };
   }
 
   static serializers: ISerializers = {
       ...DOMWidgetModel.serializers,
-      // Add any extra serializers here
+      colormap: {deserialize: unpack_models}
     }
 
-  static model_name = 'ExampleModel';
+  static model_name = 'ColorBarModel';
   static model_module = 'jupyter-colorbar';
   static model_module_version = EXTENSION_SPEC_VERSION;
-  static view_name = 'ExampleView';  // Set to null if no view
-  static view_module = 'jupyter-colorbar';   // Set to null if no view
+  static view_name = 'ColorBarView';
+  static view_module = 'jupyter-colorbar';
   static view_module_version = EXTENSION_SPEC_VERSION;
 }
 
 
 export
-class ExampleView extends DOMWidgetView {
+class ColorBarView extends DOMWidgetView {
   render() {
     this.value_changed();
     this.model.on('change:value', this.value_changed, this);
   }
 
   value_changed() {
+    chromabar
     this.el.textContent = this.model.get('value');
   }
 }
