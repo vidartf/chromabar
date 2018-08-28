@@ -40,7 +40,8 @@ class ColorBarModel extends DOMWidgetModel {
     };
   }
 
-  initialize() {
+  initialize(attributes: any, options: any) {
+    super.initialize(attributes, options);
     this.setupListeners();
   }
 
@@ -97,6 +98,7 @@ class ColorBarView extends DOMWidgetView {
 
   onChange() {
     const cmModel = this.model.get('colormap');
+    const horizontal = this.model.get('orientation') === 'horizontal';
     const barFunc = chromabar(cmModel.obj)
       .orientation(this.model.get('orientation'))
       .side(this.model.get('side'))
@@ -109,8 +111,8 @@ class ColorBarView extends DOMWidgetView {
     let svg = select(this.el).selectAll('svg').data([null]);
     svg = svg.merge(svg.enter().append('svg'));
     svg
-      .attr('height', 10 + barFunc.minHeight())
-      .attr('width', 10 + barFunc.minWidth())
+      .attr('height', barFunc.minHeight() + 10)
+      .attr('width', barFunc.minWidth() + (horizontal ? 30 : 10));
     let g = svg.selectAll('g').data([null]);
     g = g.merge(g.enter().append('g'));
     g

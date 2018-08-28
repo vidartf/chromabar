@@ -332,7 +332,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     if (horizontal) {
       const axisDim = axisPadding || DEFAULT_HORZ_AXIS_PADDING;
       const titleDim = title ? titlePadding : 0;
-      mh += axisDim + titleDim;
+      mh += breadth + axisDim + titleDim;
     } else {
       mh += length;
     }
@@ -347,7 +347,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     } else {
       const axisDim = axisPadding || DEFAULT_VERT_AXIS_PADDING;
       const titleDim = title ? titlePadding : 0;
-      mw += axisDim + titleDim;
+      mw += breadth + axisDim + titleDim;
     }
     return mw;
   };
