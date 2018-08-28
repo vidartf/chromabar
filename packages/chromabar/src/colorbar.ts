@@ -7,7 +7,7 @@ import {
   AxisScale, AxisDomain
 } from 'd3-axis';
 
-import { range } from 'd3-array';
+import { range, extent } from 'd3-array';
 
 import { SelectionContext, TransitionContext } from './common';
 
@@ -128,11 +128,11 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
     const sel = selection as Selection<SVGGElement, any, any, any>;
     // Create gradient if missing
 
-    const length = axisScale.range()[axisScale.range().length - 1];
+    const axisExtent = extent(axisScale.range()) as [number, number];
 
     // Then draw rects with colors
     let rects = sel.selectAll('rect.gradient')
-      .data(range(length + 1));
+      .data(range(...axisExtent));
 
     rects = rects.merge(rects.enter().append('rect')
       .attr('stroke-width', 0)
@@ -155,7 +155,7 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
       rects
         .attr('height', 2)
         .attr('width', breadth)
-        .attr('y', d => length - d)
+        .attr('y', d => d)
         .attr('x', 0)
       sel.select('rect.gradient:first-of-type')
         .attr('height', 1)

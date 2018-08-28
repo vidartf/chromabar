@@ -1,11 +1,11 @@
 
 import {
-  scaleLinear
-} from 'd3-scale';
-
-import {
   Axis, AxisScale, axisLeft, axisRight, axisTop, axisBottom, AxisDomain
 } from 'd3-axis';
+
+import {
+  scaleLinear
+} from 'd3-scale';
 
 import { colorbar, ColorbarAxisScale, Orientation, ColorScale } from './colorbar';
 
@@ -15,6 +15,9 @@ import { Selection } from 'd3-selection';
 
 
 const slice = Array.prototype.slice;
+
+const DEFAULT_HORZ_AXIS_PADDING = 30;
+const DEFAULT_VERT_AXIS_PADDING = 100;
 
 
 
@@ -86,6 +89,15 @@ export interface ChromaBar extends Inherited {
   axisPadding(): number | null;
   axisPadding(padding: number | null): this;
 
+  /**
+   * The minimum recommended height for the containing element.
+   */
+  minHeight(): number;
+
+  /**
+   * The minimum recommended width for the containing element.
+   */
+  minWidth(): number;
 }
 
 
@@ -120,6 +132,17 @@ function constructAxis<Domain extends AxisDomain>(
   }
 }
 
+function linspace(start: number, end: number, n: number) {
+  const out: number[] = [];
+  const delta = (end - start) / (n - 1);
+  for (let i=0; i < (n - 1); ++i) {
+    out.push(start + (i * delta));
+  }
+  out.push(end);
+  return out;
+}
+
+
 export function chromabar(scale?: ColorScale): ChromaBar {
 
   let orientation: Orientation = 'vertical';
@@ -141,7 +164,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
   const chromabar: any = (selection: SelectionContext): void => {
     if (scale === undefined) {
       scale = scaleLinear<string>()
-        .range(['black', 'white'])
+        .range(['black', 'white']);
     }
     const sel = selection as Selection<SVGGElement, any, any, any>;
 
@@ -151,8 +174,10 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     const ydim = horizontal ? breadth : length + 1;
 
     // Copy, and switch type by changing range (color -> pixels)
-    const axisScale = (scale!.copy() as any)
-      .range([0, length]) as ColorbarAxisScale;
+    const extent = horizontal ? [0, length] : [length, 0];
+    const axisScale = (scale.copy() as any)
+      .range(linspace(extent[0], extent[1], scale.domain().length)
+    ) as ColorbarAxisScale;
 
     let axisFn = constructAxis(orientation, side, axisScale)
       .tickArguments(tickArguments)
@@ -162,7 +187,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     if (tickValues !== null) axisFn.tickValues(tickValues);
     if (tickFormat !== null) axisFn.tickFormat(tickFormat);
 
-    let colorbarFn = colorbar(scale!, axisScale)
+    let colorbarFn = colorbar(scale, axisScale)
       .breadth(breadth)
       .orientation(orientation);
 
@@ -236,7 +261,9 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     // Calculate translations
 
     let offset = 0;
-    let axisDim = axisPadding || (horizontal ? 30 : 100);
+    let axisDim = axisPadding || (horizontal
+      ? DEFAULT_HORZ_AXIS_PADDING
+      : DEFAULT_VERT_AXIS_PADDING);
     let titleDim = title ? titlePadding : 0;
 
     if (side === 'topleft') {
@@ -297,6 +324,32 @@ export function chromabar(scale?: ColorScale): ChromaBar {
             horizontal ? offset : borderThickness
           })`);
     }
+  };
+
+  chromabar.minHeight = function(): number {
+    const horizontal = orientation === 'horizontal';
+    let mh = borderThickness;
+    if (horizontal) {
+      const axisDim = axisPadding || DEFAULT_HORZ_AXIS_PADDING;
+      const titleDim = title ? titlePadding : 0;
+      mh += axisDim + titleDim;
+    } else {
+      mh += length;
+    }
+    return mh;
+  };
+
+  chromabar.minWidth = function(): number {
+    const horizontal = orientation === 'horizontal';
+    let mw = borderThickness;
+    if (horizontal) {
+      mw += length;
+    } else {
+      const axisDim = axisPadding || DEFAULT_VERT_AXIS_PADDING;
+      const titleDim = title ? titlePadding : 0;
+      mw += axisDim + titleDim;
+    }
+    return mw;
   };
 
   chromabar.scale = function(_) {

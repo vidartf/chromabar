@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  DOMWidgetModel, DOMWidgetView, ISerializers, unpack_models
+  DOMWidgetModel, DOMWidgetView, ISerializers, WidgetModel, unpack_models
 } from '@jupyter-widgets/base';
 
 import {
@@ -27,8 +27,50 @@ class ColorBarModel extends DOMWidgetModel {
       _view_name: ColorBarModel.view_name,
       _view_module: ColorBarModel.view_module,
       _view_module_version: ColorBarModel.view_module_version,
-      colormap : null
+      colormap: null,
+
+      orientation: 'vertical',
+      side: 'bottomright',
+      length: 100,
+      breadth: 30,
+      border_thickness: 1,
+      title: null,
+      title_padding: 30,
+      axis_padding: null,
     };
+  }
+
+  initialize() {
+    this.setupListeners();
+  }
+
+  setupListeners() {
+    // register listener for current child value
+    const childAttrName = 'colormap';
+    var curValue = this.get(childAttrName);
+    if (curValue) {
+        this.listenTo(curValue, 'change', this.onChildChanged.bind(this));
+        this.listenTo(curValue, 'childchange', this.onChildChanged.bind(this));
+    }
+
+    // make sure to (un)hook listeners when child points to new object
+    this.on(`change:${childAttrName}`, (model: this, value: WidgetModel) => {
+        var prevModel = this.previous(childAttrName);
+        var currModel = value;
+        if (prevModel) {
+            this.stopListening(prevModel);
+        }
+        if (currModel) {
+            this.listenTo(currModel, 'change', this.onChildChanged.bind(this));
+            this.listenTo(currModel, 'childchange', this.onChildChanged.bind(this));
+        }
+    }, this);
+
+  }
+
+  onChildChanged(model: WidgetModel) {
+    // Propagate up hierarchy:
+    this.trigger('childchange', this);
   }
 
   static serializers: ISerializers = {
@@ -48,14 +90,31 @@ class ColorBarModel extends DOMWidgetModel {
 export
 class ColorBarView extends DOMWidgetView {
   render() {
-    this.value_changed();
-    this.model.on('change:value', this.value_changed, this);
+    this.onChange();
+    this.model.on('change', this.onChange, this);
+    this.model.on('childchange', this.onChange, this);
   }
 
-  value_changed() {
-    const barFunc = chromabar(this.model.get('colormap'));
-    let sel = select(this.el).selectAll('svg');
-    sel = sel.merge(sel.enter().append('svg'));
-    sel.call(barFunc);
+  onChange() {
+    const cmModel = this.model.get('colormap');
+    const barFunc = chromabar(cmModel.obj)
+      .orientation(this.model.get('orientation'))
+      .side(this.model.get('side'))
+      .barLength(this.model.get('length'))
+      .breadth(this.model.get('breadth'))
+      .borderThickness(this.model.get('border_thickness'))
+      .title(this.model.get('title'))
+      .titlePadding(this.model.get('title_padding'))
+      .axisPadding(this.model.get('axis_padding'));
+    let svg = select(this.el).selectAll('svg').data([null]);
+    svg = svg.merge(svg.enter().append('svg'));
+    svg
+      .attr('height', 10 + barFunc.minHeight())
+      .attr('width', 10 + barFunc.minWidth())
+    let g = svg.selectAll('g').data([null]);
+    g = g.merge(g.enter().append('g'));
+    g
+      .attr('transform', 'translate(5, 5)')
+      .call(barFunc);
   }
 }
