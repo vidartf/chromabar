@@ -146,11 +146,8 @@ $RECYCLE.BIN/
 
 **/node_modules/
 ipycolorbar/nbextension/static/index.*
-ipycolorbar/labextension/*.tgz
+packages/jupyter-colorbar/lab-dist/*.tgz
 
 # Coverage data
 # -------------
 **/coverage/
-
-# Packed lab extensions
-ipycolorbar/labextension
