@@ -1,6 +1,14 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "install": "lerna bootstrap --hoist",
+    "clean": "rimraf node_modules && lerna run clean",
+    "build": "lerna run build",
+    "updated": "lerna updated",
+    "test": "lerna run test",
+    "publish": "npm run clean && npm run build && lerna publish -m \"Publish npm packages\""
+  },
   "devDependencies": {
     "lerna": "^3.1.1"
   }
