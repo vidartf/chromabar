@@ -53,16 +53,16 @@ describe('chromaEditor', () => {
           '</g>' +
           '<g class="handles">' +
             '<g class="colorHandle" transform="translate(1, 34)">' +
-              '<polygon class="triangle" stroke-width="0" fill="currentColor" points="0 0, 7.5 7.5, -7.5 7.5"></polygon>' +
-              '<polygon class="bbox" stroke-width="0" fill="white" points="7.5 7.5, 7.5 37.5, -7.5 37.5, -7.5 7.5"></polygon>' +
-              '<polygon class="box" stroke-width="0" fill="rgb(0, 0, 0)" points="7.5 7.5, 7.5 37.5, -7.5 37.5, -7.5 7.5"></polygon>' +
-              '<polygon class="border" stroke="currentColor" fill="transparent" stroke-width="2" points="0 0, 7.5 7.5, 7.5 37.5, -7.5 37.5, -7.5 7.5"></polygon>' +
+              '<polygon class="triangle" stroke-width="0" fill="currentColor" points="0 0, 5 5, -5 5"></polygon>' +
+              '<polygon class="bbox" stroke-width="0" fill="white" points="5 5, 5 20, -5 20, -5 5"></polygon>' +
+              '<polygon class="box" stroke-width="0" fill="rgb(0, 0, 0)" points="5 5, 5 20, -5 20, -5 5"></polygon>' +
+              '<polygon class="border" stroke="currentColor" fill="transparent" stroke-width="2" points="0 0, 5 5, 5 20, -5 20, -5 5"></polygon>' +
             '</g>' +
             '<g class="colorHandle" transform="translate(11, 34)">' +
-              '<polygon class="triangle" stroke-width="0" fill="currentColor" points="0 0, 7.5 7.5, -7.5 7.5"></polygon>' +
-              '<polygon class="bbox" stroke-width="0" fill="white" points="7.5 7.5, 7.5 37.5, -7.5 37.5, -7.5 7.5"></polygon>' +
-              '<polygon class="box" stroke-width="0" fill="rgb(255, 255, 255)" points="7.5 7.5, 7.5 37.5, -7.5 37.5, -7.5 7.5"></polygon>' +
-              '<polygon class="border" stroke="currentColor" fill="transparent" stroke-width="2" points="0 0, 7.5 7.5, 7.5 37.5, -7.5 37.5, -7.5 7.5"></polygon>' +
+              '<polygon class="triangle" stroke-width="0" fill="currentColor" points="0 0, 5 5, -5 5"></polygon>' +
+              '<polygon class="bbox" stroke-width="0" fill="white" points="5 5, 5 20, -5 20, -5 5"></polygon>' +
+              '<polygon class="box" stroke-width="0" fill="rgb(255, 255, 255)" points="5 5, 5 20, -5 20, -5 5"></polygon>' +
+              '<polygon class="border" stroke="currentColor" fill="transparent" stroke-width="2" points="0 0, 5 5, 5 20, -5 20, -5 5"></polygon>' +
             '</g>' +
           '</g>' +
           '</svg>'
