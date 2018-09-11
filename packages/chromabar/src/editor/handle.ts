@@ -1,5 +1,5 @@
 
-import { select} from 'd3-selection';
+import { Selection } from 'd3-selection';
 
 import {
   SelectionContext, TransitionContext
@@ -55,11 +55,31 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
   let borderThickness = 2;
   let color = constant as (data: Datum) => string;
 
+  const borderColor = 'currentColor';
+  const triangleFill = 'rgb(128, 128, 128)';
+
   
   const colorHandle: any = function(selection: SelectionContext<Datum>) {
 
-    const c = width / 2;  // corner
     const h = height;
+    const w = width;
+    const c = w / 2;  // corner
+    
+    let border = selection
+      .selectAll<SVGPolygonElement, Datum>('polygon.border')
+      .data([null]);
+
+    border = border.merge(border.enter().append<SVGPolygonElement>('polygon')
+      .attr('class', 'border')
+      .attr('stroke', borderColor)
+      .attr('stroke-linejoin', 'round')
+      .attr('fill', 'transparent'));
+
+    border.exit().remove();
+
+    border
+      .attr('stroke-width', 2 * borderThickness)
+      .attr('points', `0 0, ${c} ${c}, ${c} ${c + h}, ${-c} ${c + h}, ${-c} ${c}`);
 
     let triangle = selection
       .selectAll<SVGPolygonElement, Datum>('polygon.triangle')
@@ -69,7 +89,7 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
       triangle.enter().append<SVGPolygonElement>('polygon')
         .attr('class', 'triangle')
         .attr('stroke-width', 0)
-        .attr('fill', 'currentColor'));
+        .attr('fill', borderColor));
     
     triangle.exit().remove();
     
@@ -77,7 +97,7 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
       .attr('points',  `0 0, ${c} ${c}, ${-c} ${c}`);
 
     
-    const boxPoints = `${c} ${c}, ${c} ${c + h}, ${-c} ${c + h}, ${-c} ${c}`;
+    const boxPoints = `0 0, ${w} 0, ${w} ${h}, 0 ${h}`;
 
     let bbox = selection
       .selectAll<SVGPolygonElement, Datum>('polygon.bbox')
@@ -85,11 +105,13 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
     bbox = bbox.merge(bbox.enter().append<SVGPolygonElement>('polygon')
       .attr('class', 'bbox')
       .attr('stroke-width', 0)
-      .attr('fill', 'white')); // recommended to override with checker pattern
+      .attr('fill', 'url(#checkerPattern)'));
 
     bbox.exit().remove();
 
-    bbox.attr('points', boxPoints);
+    bbox
+      .attr('points', boxPoints)
+      .attr('transform', `translate(${-c}, ${c})`);
     
     
     let box = selection
@@ -104,22 +126,8 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
 
     box
       .attr('fill', color)
-      .attr('points', boxPoints);
-    
-    let border = selection
-      .selectAll<SVGPolygonElement, Datum>('polygon.border')
-      .data([null]);
-
-    border = border.merge(border.enter().append<SVGPolygonElement>('polygon')
-      .attr('class', 'border')
-      .attr('stroke', 'currentColor')
-      .attr('fill', 'transparent'));
-
-    border.exit().remove();
-
-    border
-      .attr('stroke-width', borderThickness)
-      .attr('points', `0 0, ${c} ${c}, ${c} ${c + h}, ${-c} ${c + h}, ${-c} ${c}`);
+      .attr('points', boxPoints)
+      .attr('transform', `translate(${-c}, ${c})`);
   };
 
   colorHandle.color = function(_) {

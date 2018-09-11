@@ -5,14 +5,15 @@ import {
 
 import { scaleLinear } from 'd3-scale';
 
-import { Selection } from 'd3-selection';
+import { select } from 'd3-selection';
 
 import {
   colorbar, ColorbarAxisScale
 } from './colorbar';
 
 import {
-  SelectionContext, TransitionContext, ColorScale, Orientation, linspace
+  SelectionContext, TransitionContext, ColorScale, Orientation,
+  linspace, checkerPattern
 } from './common';
 
 
@@ -194,6 +195,26 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     colorbarGroup.call(colorbarFn);
 
+    // Color bar background
+    let bgbox = colorbarGroup.selectAll('rect.background')
+      .data([null]);
+    bgbox = bgbox.merge(bgbox.enter().insert('rect', 'rect')
+      .attr('class', 'background')
+      .attr('fill', 'url(#checkerPattern)')
+      .attr('stroke-width', 0));
+
+    // Ensure checker pattern:
+    selection.each(function() {
+      const svg = select(this.ownerSVGElement!);
+      checkerPattern(svg);
+    });
+
+    bgbox
+      .attr('width', xdim)
+      .attr('height', ydim)
+
+    bgbox.exit().remove();
+
     // Add border around color bar
     let border = colorbarGroup.selectAll('rect.border')
       .data([null]);
@@ -209,6 +230,8 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .attr('stroke-width', 2 * borderThickness)
       .attr('width', xdim)
       .attr('height', ydim);
+    
+    border.exit().remove();
 
 
     // Now make an axis

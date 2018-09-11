@@ -53,16 +53,17 @@ describe('chromabar', () => {
           '<!DOCTYPE html><svg>' +
           '<g class="colorbar" transform="translate(1, 1)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="11"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" height="2" width="30" y="0" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 51, 51)" height="2" width="30" y="1" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 102, 102)" height="2" width="30" y="2" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 153, 153)" height="2" width="30" y="3" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 204, 204)" height="2" width="30" y="4" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 255, 255)" height="2" width="30" y="5" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(204, 204, 255)" height="2" width="30" y="6" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(153, 153, 255)" height="2" width="30" y="7" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(102, 102, 255)" height="2" width="30" y="8" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(51, 51, 255)" height="2" width="30" y="9" x="0"></rect>' +
+            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="11"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" height="1" width="30" y="0" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 51, 51)" height="1" width="30" y="1" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 102, 102)" height="1" width="30" y="2" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 153, 153)" height="1" width="30" y="3" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 204, 204)" height="1" width="30" y="4" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 255, 255)" height="1" width="30" y="5" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(204, 204, 255)" height="1" width="30" y="6" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(153, 153, 255)" height="1" width="30" y="7" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(102, 102, 255)" height="1" width="30" y="8" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(51, 51, 255)" height="1" width="30" y="9" x="0"></rect>' +
             '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" height="1" width="30" y="10" x="0"></rect>' +
           '</g>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(31, 1)">' +
@@ -97,32 +98,30 @@ describe('chromabar', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg>' +
           '<g class="colorbar" transform="translate(1, 1)">' +
-          '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="2" height="8" x="0" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="2" height="8" x="1" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="2" height="8" x="2" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="2" height="8" x="3" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="2" height="8" x="4" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="2" height="8" x="5" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="2" height="8" x="6" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="2" height="8" x="7" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="2" height="8" x="8" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
+            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
+            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="1" height="8" x="0" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="1" height="8" x="1" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="1" height="8" x="2" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="1" height="8" x="3" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="1" height="8" x="4" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="1" height="8" x="5" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="1" height="8" x="6" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
           '</g>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(1, 9)">' +
-          '<path class="domain" stroke="currentColor" d="M0.5,6V0.5H9.5V6"></path>' +
-          '<g class="tick" opacity="1" transform="translate(0.5,0)">' +
-          '<line stroke="currentColor" y2="6"></line>' +
-          '<text fill="currentColor" y="9" dy="0.71em">0.0</text>' +
-          '</g>' +
-          '<g class="tick" opacity="1" transform="translate(5,0)">' +
-          '<line stroke="currentColor" y2="6"></line>' +
-          '<text fill="currentColor" y="9" dy="0.71em">0.5</text>' +
-          '</g>' +
-          '<g class="tick" opacity="1" transform="translate(9.5,0)">' +
-          '<line stroke="currentColor" y2="6"></line>' +
-          '<text fill="currentColor" y="9" dy="0.71em">1.0</text>' +
-          '</g>' +
+            '<path class="domain" stroke="currentColor" d="M0.5,6V0.5H9.5V6"></path>' +
+            '<g class="tick" opacity="1" transform="translate(0.5,0)">' +
+              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">0.0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(5,0)">' +
+              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">0.5</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(9.5,0)">' +
+              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">1.0</text>' +
+            '</g>' +
           '</g>' +
           '</svg></body>'
         )).window.document.body;
@@ -145,32 +144,30 @@ describe('chromabar', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg>' +
           '<g class="colorbar" transform="translate(1, 31)">' +
-          '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="2" height="8" x="0" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="2" height="8" x="1" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="2" height="8" x="2" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="2" height="8" x="3" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="2" height="8" x="4" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="2" height="8" x="5" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="2" height="8" x="6" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="2" height="8" x="7" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="2" height="8" x="8" y="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
+            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
+            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="1" height="8" x="0" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="1" height="8" x="1" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="1" height="8" x="2" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="1" height="8" x="3" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="1" height="8" x="4" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="1" height="8" x="5" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="1" height="8" x="6" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
           '</g>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(1, 30)">' +
-          '<path class="domain" stroke="currentColor" d="M0.5,-6V0.5H9.5V-6"></path>' +
-          '<g class="tick" opacity="1" transform="translate(0.5,0)">' +
-          '<line stroke="currentColor" y2="-6"></line>' +
-          '<text fill="currentColor" y="-9" dy="0em">0.0</text>' +
-          '</g>' +
-          '<g class="tick" opacity="1" transform="translate(5,0)">' +
-          '<line stroke="currentColor" y2="-6"></line>' +
-          '<text fill="currentColor" y="-9" dy="0em">0.5</text>' +
-          '</g>' +
-          '<g class="tick" opacity="1" transform="translate(9.5,0)">' +
-          '<line stroke="currentColor" y2="-6"></line>' +
-          '<text fill="currentColor" y="-9" dy="0em">1.0</text>' +
-          '</g>' +
+            '<path class="domain" stroke="currentColor" d="M0.5,-6V0.5H9.5V-6"></path>' +
+            '<g class="tick" opacity="1" transform="translate(0.5,0)">' +
+              '<line stroke="currentColor" y2="-6"></line><text fill="currentColor" y="-9" dy="0em">0.0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(5,0)">' +
+              '<line stroke="currentColor" y2="-6"></line><text fill="currentColor" y="-9" dy="0em">0.5</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(9.5,0)">' +
+              '<line stroke="currentColor" y2="-6"></line><text fill="currentColor" y="-9" dy="0em">1.0</text>' +
+            '</g>' +
           '</g>' +
           '</svg></body>'
         )).window.document.body;

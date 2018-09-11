@@ -8,17 +8,24 @@ import {
 } from 'd3-scale';
 
 import {
+  Selection, select
+} from 'd3-selection';
+
+import {
   colorbar, ColorbarAxisScale
 } from '../colorbar';
 
 import {
-  SelectionContext, TransitionContext, Orientation, ColorScale, linspace
+  Orientation, ColorScale, linspace, SelectionContext,
+  checkerPattern
 } from '../common';
 
 import {
   colorHandle
 } from './handle';
 
+
+export type SVGSelection = Selection<SVGSVGElement, unknown, any, any>;
 
 
 export interface ChromaEditor {
@@ -29,13 +36,6 @@ export interface ChromaEditor {
    * @param context A selection of SVG containers (either SVG or G elements).
    */
   (context: SelectionContext<unknown>): void;
-
-  /**
-   * Render the color bar to the given context.
-   *
-   * @param context A transition defined on SVG containers (either SVG or G elements).
-   */
-  (context: TransitionContext<unknown>): void;
 
   /**
    * Gets the current scale used for color lookup.
@@ -114,6 +114,11 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
       .breadth(breadth)
       .orientation(orientation);
 
+    // Ensure checker pattern:
+    selection.each(function() {
+      const svg = select(this.ownerSVGElement!);
+      checkerPattern(svg);
+    });
 
     // Add color bar
     let colorbarGroup = selection.selectAll<SVGGElement, null>('g.colorbar')
@@ -126,6 +131,20 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
     colorbarGroup.exit().remove();
 
     colorbarGroup.call(colorbarFn);
+
+    // Color bar background
+    let bgbox = colorbarGroup.selectAll('rect.background')
+      .data([null]);
+    bgbox = bgbox.merge(bgbox.enter().insert('rect', 'rect')
+      .attr('class', 'background')
+      .attr('fill', 'url(#checkerPattern)')
+      .attr('stroke-width', 0));
+
+    bgbox
+      .attr('width', xdim)
+      .attr('height', ydim)
+
+    bgbox.exit().remove();
 
     // Add border around color bar
     let border = colorbarGroup.selectAll('rect.border')

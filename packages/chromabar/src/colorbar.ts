@@ -6,7 +6,8 @@ import { AxisScale, AxisDomain } from 'd3-axis';
 import { Selection } from 'd3-selection';
 
 import {
-  SelectionContext, TransitionContext, Orientation, ColorScale
+  SelectionContext, TransitionContext, Orientation, ColorScale,
+  checkerPattern
 } from './common';
 
 
@@ -119,20 +120,16 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
 
     if (orientation === 'horizontal') {
       rects
-        .attr('width', 2)
+        .attr('width', 1)
         .attr('height', breadth)
         .attr('x', d => d)
         .attr('y', 0);
-      selection.select('rect.gradient:last-of-type')
-        .attr('width', 1);
     } else {
       rects
-        .attr('height', 2)
+        .attr('height', 1)
         .attr('width', breadth)
         .attr('y', d => d)
         .attr('x', 0);
-      selection.select('rect.gradient:last-of-type')
-        .attr('height', 1);
     }
 
   };
