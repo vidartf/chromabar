@@ -35,22 +35,22 @@ describe('colorbar', () => {
     const s = scaleLinear<string, string>()
       .range(['red', 'blue']);
     const a = scaleLinear()
-      .range([0, 9]);  // 10 px
+      .range([9, 0]);  // 10 px
     const b = colorbar(s, a);
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg><g></g></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg><g>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" height="1" width="30" y="9" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" height="2" width="30" y="8" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" height="2" width="30" y="7" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" height="2" width="30" y="6" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" height="2" width="30" y="5" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" height="2" width="30" y="4" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" height="2" width="30" y="3" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" height="2" width="30" y="2" x="0"></rect>' +
-          '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" height="2" width="30" y="1" x="0"></rect>' +
           '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" height="2" width="30" y="0" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" height="2" width="30" y="1" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" height="2" width="30" y="2" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" height="2" width="30" y="3" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" height="2" width="30" y="4" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" height="2" width="30" y="5" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" height="2" width="30" y="6" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" height="2" width="30" y="7" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" height="2" width="30" y="8" x="0"></rect>' +
+          '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" height="1" width="30" y="9" x="0"></rect>' +
           '</g></svg>'
         )).window.document.body;
     select(bodyActual).select("g").call(b);

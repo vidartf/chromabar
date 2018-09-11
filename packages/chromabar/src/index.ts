@@ -170,11 +170,11 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     const horizontal = orientation === 'horizontal';
 
-    const xdim = horizontal ? length + 1 : breadth;
-    const ydim = horizontal ? breadth : length + 1;
+    const xdim = horizontal ? length : breadth;
+    const ydim = horizontal ? breadth : length;
 
     // Copy, and switch type by changing range (color -> pixels)
-    const extent = horizontal ? [0, length] : [length, 0];
+    const extent = horizontal ? [0, length - 1] : [length - 1, 0];
     const axisScale = (scale.copy() as any)
       .range(linspace(extent[0], extent[1], scale.domain().length)
     ) as ColorbarAxisScale;

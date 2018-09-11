@@ -132,7 +132,7 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
 
     // Then draw rects with colors
     let rects = sel.selectAll('rect.gradient')
-      .data(range(...axisExtent));
+      .data(range(axisExtent[0], axisExtent[1] + 1));
 
     rects = rects.merge(rects.enter().append('rect')
       .attr('stroke-width', 0)
@@ -157,7 +157,7 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
         .attr('width', breadth)
         .attr('y', d => d)
         .attr('x', 0)
-      sel.select('rect.gradient:first-of-type')
+      sel.select('rect.gradient:last-of-type')
         .attr('height', 1)
     }
 
