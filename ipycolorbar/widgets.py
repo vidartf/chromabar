@@ -17,8 +17,8 @@ module_name = "jupyter-colorbar"
 
 
 class ColorBar(DOMWidget):
-    """TODO: Add docstring here
-    """
+    """A color bar widget, representing an ipyscales color map"""
+
     _model_name = Unicode('ColorBarModel').tag(sync=True)
     _model_module = Unicode(module_name).tag(sync=True)
     _model_module_version = Unicode(EXTENSION_SPEC_VERSION).tag(sync=True)

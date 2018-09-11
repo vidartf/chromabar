@@ -1,37 +1,13 @@
 
-import {
-  ScaleContinuousNumeric
-} from 'd3-scale';
-
-import {
-  AxisScale, AxisDomain
-} from 'd3-axis';
-
 import { range, extent } from 'd3-array';
 
-import { SelectionContext, TransitionContext } from './common';
+import { AxisScale, AxisDomain } from 'd3-axis';
 
 import { Selection } from 'd3-selection';
 
-
-export type Orientation = 'horizontal' | 'vertical';
-
-export interface ColorScale {
-  (value: number | { valueOf(): number }): string;
-
-  domain(): AxisDomain[];
-  domain(domain: Array<AxisDomain | { valueOf(): AxisDomain }>): this;
-
-  range(): string[];
-  range(value: string[]): this;
-
-  invert(value: number | { valueOf(): number }): number;
-
-  ticks(count?: number): number[];
-  tickFormat(count?: number, specifier?: string): ((d: number | { valueOf(): number }) => string);
-
-  copy(): this;
-};
+import {
+  SelectionContext, TransitionContext, Orientation, ColorScale
+} from './common';
 
 
 export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
@@ -53,14 +29,14 @@ export interface ColorBar {
    *
    * @param context A selection of SVG containers (either SVG or G elements).
    */
-  (context: SelectionContext): void;
+  (context: SelectionContext<unknown>): void;
 
   /**
    * Render the color bar to the given context.
    *
    * @param context A transition defined on SVG containers (either SVG or G elements).
    */
-  (context: TransitionContext): void;
+  (context: TransitionContext<unknown>): void;
 
   /**
    * Gets the current scale used for color lookup.
@@ -123,18 +99,16 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
   let breadth = 30;
 
 
-  const colorbar: any = (selection: SelectionContext): void => {
-
-    const sel = selection as Selection<SVGGElement, any, any, any>;
+  const colorbar: any = (selection: SelectionContext<unknown>): void => {
     // Create gradient if missing
 
     const axisExtent = extent(axisScale.range()) as [number, number];
 
     // Then draw rects with colors
-    let rects = sel.selectAll('rect.gradient')
+    let rects = selection.selectAll<SVGRectElement, unknown>('rect.gradient')
       .data(range(axisExtent[0], axisExtent[1] + 1));
 
-    rects = rects.merge(rects.enter().append('rect')
+    rects = rects.merge(rects.enter().append<SVGRectElement>('rect')
       .attr('stroke-width', 0)
       .attr('class', 'gradient'));
 
@@ -148,17 +122,17 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
         .attr('width', 2)
         .attr('height', breadth)
         .attr('x', d => d)
-        .attr('y', 0)
-      sel.select('rect.gradient:last-of-type')
-        .attr('width', 1)
+        .attr('y', 0);
+      selection.select('rect.gradient:last-of-type')
+        .attr('width', 1);
     } else {
       rects
         .attr('height', 2)
         .attr('width', breadth)
         .attr('y', d => d)
-        .attr('x', 0)
-      sel.select('rect.gradient:last-of-type')
-        .attr('height', 1)
+        .attr('x', 0);
+      selection.select('rect.gradient:last-of-type')
+        .attr('height', 1);
     }
 
   };

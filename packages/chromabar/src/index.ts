@@ -3,15 +3,17 @@ import {
   Axis, AxisScale, axisLeft, axisRight, axisTop, axisBottom, AxisDomain
 } from 'd3-axis';
 
-import {
-  scaleLinear
-} from 'd3-scale';
-
-import { colorbar, ColorbarAxisScale, Orientation, ColorScale } from './colorbar';
-
-import { SelectionContext, TransitionContext } from './common';
+import { scaleLinear } from 'd3-scale';
 
 import { Selection } from 'd3-selection';
+
+import {
+  colorbar, ColorbarAxisScale
+} from './colorbar';
+
+import {
+  SelectionContext, TransitionContext, ColorScale, Orientation, linspace
+} from './common';
 
 
 const slice = Array.prototype.slice;
@@ -44,14 +46,14 @@ export interface ChromaBar extends Inherited {
    *
    * @param context A selection of SVG containers (either SVG or G elements).
    */
-  (context: SelectionContext): void;
+  (context: SelectionContext<unknown>): void;
 
   /**
    * Render the color bar to the given context.
    *
    * @param context A transition defined on SVG containers (either SVG or G elements).
    */
-  (context: TransitionContext): void;
+  (context: TransitionContext<unknown>): void;
 
   /**
    * Gets the current scale used for color lookup.
@@ -132,17 +134,6 @@ function constructAxis<Domain extends AxisDomain>(
   }
 }
 
-function linspace(start: number, end: number, n: number) {
-  const out: number[] = [];
-  const delta = (end - start) / (n - 1);
-  for (let i=0; i < (n - 1); ++i) {
-    out.push(start + (i * delta));
-  }
-  out.push(end);
-  return out;
-}
-
-
 export function chromabar(scale?: ColorScale): ChromaBar {
 
   let orientation: Orientation = 'vertical';
@@ -161,12 +152,11 @@ export function chromabar(scale?: ColorScale): ChromaBar {
   let axisPadding: number | null = null;
 
 
-  const chromabar: any = (selection: SelectionContext): void => {
+  const chromabar: any = (selection: SelectionContext<unknown>): void => {
     if (scale === undefined) {
       scale = scaleLinear<string>()
         .range(['black', 'white']);
     }
-    const sel = selection as Selection<SVGGElement, any, any, any>;
 
     const horizontal = orientation === 'horizontal';
 
@@ -193,11 +183,12 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
 
     // Add color bar
-    let colorbarGroup = sel.selectAll('g.colorbar')
+    let colorbarGroup = selection.selectAll<SVGGElement, null>('g.colorbar')
       .data([null]);
 
-    colorbarGroup = colorbarGroup.merge(colorbarGroup.enter().append('g')
-      .attr('class', 'colorbar'));
+    colorbarGroup = colorbarGroup.merge(
+      colorbarGroup.enter().append<SVGGElement>('g')
+        .attr('class', 'colorbar'));
 
     colorbarGroup.exit().remove();
 
@@ -221,7 +212,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
 
     // Now make an axis
-    let axisGroup = sel.selectAll('g.axis')
+    let axisGroup = selection.selectAll('g.axis')
       .data([null]);
 
     axisGroup = axisGroup.merge(axisGroup.enter().append('g')
@@ -233,7 +224,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .call(axisFn);
 
     // Make a title
-    let titleGroup = sel.selectAll('g.title')
+    let titleGroup = selection.selectAll('g.title')
       .data(title ? [null] : []);
 
     titleGroup = titleGroup.merge(titleGroup.enter().append('g')

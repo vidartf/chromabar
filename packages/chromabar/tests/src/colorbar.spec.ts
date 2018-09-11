@@ -53,7 +53,7 @@ describe('colorbar', () => {
           '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" height="1" width="30" y="9" x="0"></rect>' +
           '</g></svg>'
         )).window.document.body;
-    select(bodyActual).select("g").call(b);
+    select(bodyActual).select<SVGGElement>("g").call(b);
 
     console.log(bodyActual.outerHTML);
 
@@ -84,7 +84,7 @@ describe('colorbar', () => {
           '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
           '</g></svg>'
         )).window.document.body;
-    select(bodyActual).select("g").call(b);
+    select(bodyActual).select<SVGGElement>("g").call(b);
 
     expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
   });
