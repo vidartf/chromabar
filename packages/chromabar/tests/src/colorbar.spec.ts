@@ -55,8 +55,6 @@ describe('colorbar', () => {
         )).window.document.body;
     select(bodyActual).select<SVGGElement>("g").call(b);
 
-    console.log(bodyActual.outerHTML);
-
     expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
   });
 
