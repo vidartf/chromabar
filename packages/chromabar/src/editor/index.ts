@@ -193,6 +193,30 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
 
   };
 
+  chromaEditor.minHeight = function(): number {
+    const horizontal = orientation === 'horizontal';
+    const ht = handleGen.borderThickness();
+    let mh = borderThickness + 2 * ht;
+    if (horizontal) {
+      mh += breadth + handleGen.height();
+    } else {
+      mh += length + handleGen.width();
+    }
+    return mh;
+  };
+
+  chromaEditor.minWidth = function(): number {
+    const horizontal = orientation === 'horizontal';
+    const ht = handleGen.borderThickness();
+    let mw = borderThickness + 2 * ht;
+    if (horizontal) {
+      mw += length + handleGen.width();
+    } else {
+      mw += breadth + handleGen.height();
+    }
+    return mw;
+  };
+
   chromaEditor.scale = function(_) {
     return arguments.length ? (scale = _, chromaEditor) : scale;
   };

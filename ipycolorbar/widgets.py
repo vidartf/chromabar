@@ -36,3 +36,22 @@ class ColorBar(DOMWidget):
     title = Unicode(None, allow_none=True).tag(sync=True)
     title_padding = Int(30).tag(sync=True)
     axis_padding = Int(None, allow_none=True).tag(sync=True)
+
+
+
+class ColorMapEditor(DOMWidget):
+    """A color bar widget, representing an ipyscales color map"""
+
+    _model_name = Unicode('ColorMapEditorModel').tag(sync=True)
+    _model_module = Unicode(module_name).tag(sync=True)
+    _model_module_version = Unicode(EXTENSION_SPEC_VERSION).tag(sync=True)
+    _view_name = Unicode('ColorMapEditorView').tag(sync=True)
+    _view_module = Unicode(module_name).tag(sync=True)
+    _view_module_version = Unicode(EXTENSION_SPEC_VERSION).tag(sync=True)
+
+    colormap = Instance(ScaleWidget, allow_none=False).tag(sync=True, **widget_serialization)
+
+    orientation = Enum(('vertical', 'horizontal'), 'vertical').tag(sync=True)
+    length = Int(100, min=2).tag(sync=True)
+    breadth = Int(30, min=1).tag(sync=True)
+    border_thickness = Float(1.0).tag(sync=True)

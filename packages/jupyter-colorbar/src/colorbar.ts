@@ -108,12 +108,12 @@ class ColorBarView extends DOMWidgetView {
       .title(this.model.get('title'))
       .titlePadding(this.model.get('title_padding'))
       .axisPadding(this.model.get('axis_padding'));
-    let svg = select(this.el).selectAll('svg').data([null]);
+    let svg = select(this.el).selectAll<SVGSVGElement, null>('svg').data([null]);
     svg = svg.merge(svg.enter().append('svg'));
     svg
       .attr('height', barFunc.minHeight() + 10)
       .attr('width', barFunc.minWidth() + (horizontal ? 30 : 10));
-    let g = svg.selectAll('g').data([null]);
+    let g = svg.selectAll<SVGGElement, null>('g').data([null]);
     g = g.merge(g.enter().append('g'));
     g
       .attr('transform', 'translate(5, 5)')

@@ -86,16 +86,15 @@ setup_args = dict(
     include_package_data = True,
     install_requires = [
         'ipywidgets>=7.0.0',
+        'ipyscales',
     ],
     extras_require = {
         'test': [
             'pytest',
             'pytest-cov',
             'nbval',
-            'ipyscales'
         ],
         'examples': [
-            'ipyscales',
         ],
         'docs': [
             'sphinx>=1.5',

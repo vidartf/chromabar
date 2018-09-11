@@ -50,8 +50,8 @@ export interface ColorHandle<Datum> {
 
 export function colorHandle<Datum>(): ColorHandle<Datum> {
 
-  let width = 15;
-  let height = 30;
+  let width = 10;
+  let height = 15;
   let borderThickness = 2;
   let color = constant as (data: Datum) => string;
 

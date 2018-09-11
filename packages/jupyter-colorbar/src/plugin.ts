@@ -15,7 +15,11 @@ import {
 
 import {
   ColorBarModel, ColorBarView
-} from './widget';
+} from './colorbar';
+
+import {
+  ColorMapEditorModel, ColorMapEditorView
+} from './editor';
 
 import {
   EXTENSION_SPEC_VERSION
@@ -45,8 +49,10 @@ function activateWidgetExtension(app: Application<Widget>, registry: IJupyterWid
     name: 'jupyter-colorbar',
     version: EXTENSION_SPEC_VERSION,
     exports: {
-      ColorBarModel: ColorBarModel,
-      ColorBarView: ColorBarView
+      ColorBarModel,
+      ColorBarView,
+      ColorMapEditorModel,
+      ColorMapEditorView,
     }
   });
 }
