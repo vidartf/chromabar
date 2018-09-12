@@ -3,12 +3,14 @@ import {
   Axis, AxisScale, AxisDomain, 
 } from 'd3-axis';
 
+import { drag } from 'd3-drag';
+
 import {
   scaleLinear
 } from 'd3-scale';
 
 import {
-  Selection, select
+  Selection, select, create, event
 } from 'd3-selection';
 
 import {
@@ -61,6 +63,9 @@ export interface ChromaEditor {
   borderThickness(): number;
   borderThickness(borderThickness: number): this;
 
+  onUpdate(): ((scale: ColorScale) => void) | null;
+  onUpdate(value: ((scale: ColorScale) => void) | null): this;
+
   /**
    * The minimum recommended height for the containing element.
    */
@@ -89,6 +94,7 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
   let length = 100;
   let breadth = 30;
   let borderThickness = 1;
+  let onUpdate: ((scale: ColorScale) => void) | null = null;
 
   const handleGen = colorHandle();
 
@@ -182,6 +188,7 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
     handleGen.color(scale);
 
     const offset = borderThickness * 2 + handleGen.borderThickness();
+    
 
     handles.call(handleGen)
       .attr('transform', function(d) {
@@ -199,9 +206,10 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
           pos + borderThickness
         })rotate(-90)`;
       })
-      .on('click', function(d) {
-        alert(`Click with data: "${d}"`);
-      });
+      .on('dblclick', function(d, i) {
+        editColor(i);
+      })
+      .call(dragFn);
 
 
     // Order: colorbar (with border), axis, title
@@ -211,6 +219,36 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
       });
 
   };
+
+  const colorPicker = create<HTMLInputElement>('input')
+    .attr('type', 'color');
+
+  function editColor(index: number) {
+    const origColor = scale!.range()[index];
+    colorPicker.attr('value', origColor);
+    colorPicker.on('change', function() {
+      let range = scale!.range();
+      range[index] = event.target.value;
+      scale!.range(range);
+      if (onUpdate) {
+        onUpdate(scale!);
+      }
+    });
+    (colorPicker.node()!).click();
+  }
+
+  const dragFn = drag<SVGGElement, AxisDomain>().on('drag', function(d, i) {
+    const horizontal = orientation === 'horizontal';
+    let pos = horizontal ? event.x : event.y;
+    const domain = scale!.domain();
+    domain[i] = pos;
+    scale!.domain(domain);
+    if (onUpdate) {
+      onUpdate(scale!);
+    }
+  }).on('end', function(d, i) {
+    const g = select(this);
+  });
 
   chromaEditor.minHeight = function(): number {
     const horizontal = orientation === 'horizontal';
@@ -254,6 +292,10 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
 
   chromaEditor.borderThickness = function(_) {
     return arguments.length ? (borderThickness = _, chromaEditor) : borderThickness;
+  };
+
+  chromaEditor.onUpdate = function(_) {
+    return arguments.length ? (onUpdate = _, chromaEditor) : onUpdate;
   };
 
   return chromaEditor;

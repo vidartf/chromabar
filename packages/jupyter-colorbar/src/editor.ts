@@ -6,6 +6,10 @@ import {
 } from '@jupyter-widgets/base';
 
 import {
+  ScaleModel
+} from 'jupyter-scales'
+
+import {
   chromaEditor
 } from 'chromabar';
 
@@ -93,13 +97,18 @@ class ColorMapEditorView extends DOMWidgetView {
   }
 
   onChange() {
-    const cmModel = this.model.get('colormap');
+    const cmModel = this.model.get('colormap') as ScaleModel;
     const horizontal = this.model.get('orientation') === 'horizontal';
     const editorFn = chromaEditor(cmModel.obj)
       .orientation(this.model.get('orientation'))
       .barLength(this.model.get('length'))
       .breadth(this.model.get('breadth'))
-      .borderThickness(this.model.get('border_thickness'));
+      .borderThickness(this.model.get('border_thickness'))
+      .onUpdate(() => {
+        // Sync back all changes to both server and here
+        cmModel.syncToModel({});
+        cmModel.save_changes();
+      });
     let svg = select(this.el).selectAll<SVGSVGElement, null>('svg').data([null]);
     svg = svg.merge(svg.enter().append('svg'));
     svg
