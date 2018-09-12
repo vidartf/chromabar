@@ -7,12 +7,13 @@
 import pytest
 
 from ipyscales import LinearScaleWidget
+from traitlets import TraitError
 
 from ..widgets import ColorBar
 
 
 def test_colorbar_creation_blank():
-    with pytest.raises(ValueError):
+    with pytest.raises(TraitError):
         ColorBar()
 
 def test_colorbar_creation():
