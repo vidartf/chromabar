@@ -111,8 +111,10 @@ class ColorMapEditorView extends DOMWidgetView {
           cmModel.save_changes();
         }
       });
-    let svg = select(this.el).selectAll<SVGSVGElement, null>('svg').data([null]);
-    svg = svg.merge(svg.enter().append('svg'));
+    let svg = select(this.el)
+      .selectAll<SVGSVGElement, null>('svg.ipycolorbar').data([null]);
+    svg = svg.merge(svg.enter().append<SVGSVGElement>('svg')
+      .attr('class', 'ipycolorbar'));
     svg
       .attr('height', editorFn.minHeight() + (horizontal ? 20 : 10))
       .attr('width', editorFn.minWidth() + (horizontal ? 10 : 20));

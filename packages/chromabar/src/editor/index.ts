@@ -114,7 +114,7 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
     const extent = horizontal ? [0, length - 1] : [length - 1, 0];
     // Assume monotonous domain for scale:
     const domain = scale.domain();
-    const transformer = scaleLinear<any>()
+    const transformer = (scale.copy() as any)
       .domain([domain[0], domain[domain.length -1]] as any)
       .range(extent) as ColorbarAxisScale;
     const axisScale = (scale.copy() as any)

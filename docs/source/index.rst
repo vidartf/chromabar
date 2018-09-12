@@ -4,7 +4,7 @@ ipycolorbar
 
 Version: |release|
 
-A Jupyter widget for a color bar
+A Jupyter widget for visualising colormaps as color bars.
 
 
 Quickstart

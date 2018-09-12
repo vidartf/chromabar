@@ -23,7 +23,9 @@ a link installation of the extension::
 
 with the `appropriate flag`_. Or, if you are using Jupyterlab::
 
-    jupyter labextension install .
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager --no-build
+    jupyter labextension link ./packages/chromabar --no-build
+    jupyter labextension install ./packages/jupyter-colorbar
 
 
 .. links

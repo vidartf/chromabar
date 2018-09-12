@@ -4,6 +4,7 @@ const path = require('path');
 const rules = [
   { test: /\.ts$/, loader: 'ts-loader' },
   { test: /\.js$/, loader: 'source-map-loader' },
+  { test: /\.css$/, use: ['style-loader', 'css-loader'] },
 ];
 
 // Packages that shouldn't be bundled but loaded at runtime

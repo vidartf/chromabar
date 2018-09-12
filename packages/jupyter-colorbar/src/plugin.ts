@@ -25,6 +25,9 @@ import {
   EXTENSION_SPEC_VERSION
 } from './version';
 
+// Import lab styling for mathcing theme:
+import '../style/plugin.css';
+
 const EXTENSION_ID = 'jupyter-colorbar';
 
 
