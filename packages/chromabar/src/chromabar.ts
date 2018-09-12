@@ -166,9 +166,13 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     // Copy, and switch type by changing range (color -> pixels)
     const extent = horizontal ? [0, length - 1] : [length - 1, 0];
+    // Assume monotonous domain for scale:
+    const domain = scale.domain();
+    const transformer = scaleLinear<any>()
+      .domain([domain[0], domain[domain.length -1]] as any)
+      .range(extent) as ColorbarAxisScale;
     const axisScale = (scale.copy() as any)
-      .range(linspace(extent[0], extent[1], scale.domain().length)
-    ) as ColorbarAxisScale;
+      .range(domain.map((v) => transformer(v))) as ColorbarAxisScale;
 
     let axisFn = constructAxis(orientation, side, axisScale)
       .tickArguments(tickArguments)

@@ -52,7 +52,7 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
 
   let width = 10;
   let height = 15;
-  let borderThickness = 2;
+  let borderThickness = 1;
   let color = constant as (data: Datum) => string;
 
   const borderColor = 'currentColor';
@@ -89,7 +89,7 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
       triangle.enter().append<SVGPolygonElement>('polygon')
         .attr('class', 'triangle')
         .attr('stroke-width', 0)
-        .attr('fill', borderColor));
+        .attr('fill', triangleFill));
     
     triangle.exit().remove();
     

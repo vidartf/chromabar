@@ -63,8 +63,8 @@ export interface ChromaEditor {
   borderThickness(): number;
   borderThickness(borderThickness: number): this;
 
-  onUpdate(): ((scale: ColorScale) => void) | null;
-  onUpdate(value: ((scale: ColorScale) => void) | null): this;
+  onUpdate(): ((save: boolean) => void) | null;
+  onUpdate(value: ((save: boolean) => void) | null): this;
 
   /**
    * The minimum recommended height for the containing element.
@@ -94,7 +94,7 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
   let length = 100;
   let breadth = 30;
   let borderThickness = 1;
-  let onUpdate: ((scale: ColorScale) => void) | null = null;
+  let onUpdate: ((save: boolean) => void) | null = null;
 
   const handleGen = colorHandle();
 
@@ -107,14 +107,18 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
 
     const horizontal = orientation === 'horizontal';
 
-    const xdim = horizontal ? length + 1 : breadth;
-    const ydim = horizontal ? breadth : length + 1;
+    const xdim = horizontal ? length : breadth;
+    const ydim = horizontal ? breadth : length;
 
     // Copy, and switch type by changing range (color -> pixels)
-    const extent = horizontal ? [0, length] : [length, 0];
+    const extent = horizontal ? [0, length - 1] : [length - 1, 0];
+    // Assume monotonous domain for scale:
+    const domain = scale.domain();
+    const transformer = scaleLinear<any>()
+      .domain([domain[0], domain[domain.length -1]] as any)
+      .range(extent) as ColorbarAxisScale;
     const axisScale = (scale.copy() as any)
-      .range(linspace(extent[0], extent[1], scale.domain().length)
-    ) as ColorbarAxisScale;
+      .range(domain.map((v) => transformer(v))) as ColorbarAxisScale;
 
     let colorbarFn = colorbar(scale, axisScale)
       .breadth(breadth)
@@ -190,6 +194,21 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
     const offset = borderThickness * 2 + handleGen.borderThickness();
     
 
+    const dragFn = drag<SVGGElement, AxisDomain>().on('drag', function(d, i) {
+      const horizontal = orientation === 'horizontal';
+      let pos = axisScale.invert(horizontal ? event.x : event.y);
+      const domain = scale!.domain();
+      domain[i] = pos;
+      scale!.domain(domain);
+      if (onUpdate) {
+        onUpdate(false);
+      }
+    }).on('end', function(d, i) {
+      if (onUpdate) {
+        onUpdate(true);
+      }
+    });
+
     handles.call(handleGen)
       .attr('transform', function(d) {
         const pos = (axisScale(d) || 0);
@@ -231,24 +250,11 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
       range[index] = event.target.value;
       scale!.range(range);
       if (onUpdate) {
-        onUpdate(scale!);
+        onUpdate(true);
       }
     });
     (colorPicker.node()!).click();
   }
-
-  const dragFn = drag<SVGGElement, AxisDomain>().on('drag', function(d, i) {
-    const horizontal = orientation === 'horizontal';
-    let pos = horizontal ? event.x : event.y;
-    const domain = scale!.domain();
-    domain[i] = pos;
-    scale!.domain(domain);
-    if (onUpdate) {
-      onUpdate(scale!);
-    }
-  }).on('end', function(d, i) {
-    const g = select(this);
-  });
 
   chromaEditor.minHeight = function(): number {
     const horizontal = orientation === 'horizontal';

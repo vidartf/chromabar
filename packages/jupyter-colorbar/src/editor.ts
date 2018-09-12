@@ -104,10 +104,12 @@ class ColorMapEditorView extends DOMWidgetView {
       .barLength(this.model.get('length'))
       .breadth(this.model.get('breadth'))
       .borderThickness(this.model.get('border_thickness'))
-      .onUpdate(() => {
+      .onUpdate((save: boolean) => {
         // Sync back all changes to both server and here
         cmModel.syncToModel({});
-        cmModel.save_changes();
+        if (save) {
+          cmModel.save_changes();
+        }
       });
     let svg = select(this.el).selectAll<SVGSVGElement, null>('svg').data([null]);
     svg = svg.merge(svg.enter().append('svg'));
