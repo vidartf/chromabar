@@ -37,6 +37,13 @@ class ColorBarModel extends DOMWidgetModel {
       title: null,
       title_padding: 30,
       axis_padding: null,
+
+      tickArguments: [],
+      tickValues: null,
+      tickFormat: null,
+      tickSizeInner: 6,
+      tickSizeOuter: 6,
+      tickPadding: 3,
     };
   }
 
