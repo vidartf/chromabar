@@ -1,6 +1,4 @@
 
-import { Selection } from 'd3-selection';
-
 import {
   SelectionContext, TransitionContext
 } from '../common';

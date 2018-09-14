@@ -1,6 +1,6 @@
 
 import {
-  Axis, AxisScale, AxisDomain, 
+  AxisDomain,
 } from 'd3-axis';
 
 import { drag } from 'd3-drag';
@@ -18,7 +18,7 @@ import {
 } from '../colorbar';
 
 import {
-  Orientation, ColorScale, linspace, SelectionContext,
+  Orientation, ColorScale, SelectionContext,
   checkerPattern
 } from '../common';
 

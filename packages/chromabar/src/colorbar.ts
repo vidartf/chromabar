@@ -3,11 +3,8 @@ import { range, extent } from 'd3-array';
 
 import { AxisScale, AxisDomain } from 'd3-axis';
 
-import { Selection } from 'd3-selection';
-
 import {
   SelectionContext, TransitionContext, Orientation, ColorScale,
-  checkerPattern
 } from './common';
 
 

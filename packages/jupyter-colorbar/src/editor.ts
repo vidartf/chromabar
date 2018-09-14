@@ -33,8 +33,8 @@ class ColorMapEditorModel extends DOMWidgetModel {
       _view_module_version: ColorMapEditorModel.view_module_version,
       colormap: null,
 
-      orientation: 'vertical',
-      length: 100,
+      orientation: 'horizontal',
+      length: 300,
       breadth: 30,
       border_thickness: 1,
     };

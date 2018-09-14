@@ -13,7 +13,7 @@ import {
 
 import {
   SelectionContext, TransitionContext, ColorScale, Orientation,
-  linspace, checkerPattern
+  checkerPattern
 } from './common';
 
 
