@@ -145,8 +145,6 @@ $RECYCLE.BIN/
 # ----
 
 **/node_modules/
-ipycolorbar/nbextension/static/index.*
-packages/jupyter-colorbar/lab-dist/*.tgz
 
 # Coverage data
 # -------------
