@@ -1,8 +1,11 @@
 {
   "name": "chromabar",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A colorbar for d3 color scales",
   "main": "lib/index.js",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "tsc --project src",
     "clean": "rimraf lib",
