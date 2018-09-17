@@ -1,4 +1,5 @@
-
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
 import { AxisDomain } from 'd3-axis';
 
@@ -29,25 +30,14 @@ export interface ColorScale {
 };
 
 
-export function linspace(start: number, end: number, n: number) {
-  const out: number[] = [];
-  const delta = (end - start) / (n - 1);
-  for (let i=0; i < (n - 1); ++i) {
-    out.push(start + (i * delta));
-  }
-  out.push(end);
-  return out;
-}
-
-
 /**
- *  
+ *
  */
 export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any, unknown>) {
   let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
   defs = defs.merge(defs.enter().append('defs'));
   defs.exit().remove();
-  
+
   let pattern = defs.selectAll<SVGPatternElement, unknown>('pattern#checkerPattern')
     .data([null]);
   pattern = pattern.merge(pattern.enter().append<SVGPatternElement>('pattern')

@@ -1,3 +1,5 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
 import {
   AxisDomain,
@@ -98,7 +100,7 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
 
   const handleGen = colorHandle();
 
-  
+
   const chromaEditor: any = (selection: SelectionContext<unknown>): void => {
     if (scale === undefined) {
       scale = scaleLinear<string>()
@@ -192,7 +194,7 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
     handleGen.color(scale);
 
     const offset = borderThickness * 2 + handleGen.borderThickness();
-    
+
 
     const dragFn = drag<SVGGElement, AxisDomain>().on('drag', function(d, i) {
       const horizontal = orientation === 'horizontal';

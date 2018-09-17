@@ -1,3 +1,5 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
 import {
   Axis, AxisScale, axisLeft, axisRight, axisTop, axisBottom, AxisDomain
@@ -234,7 +236,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .attr('stroke-width', 2 * borderThickness)
       .attr('width', xdim)
       .attr('height', ydim);
-    
+
     border.exit().remove();
 
 

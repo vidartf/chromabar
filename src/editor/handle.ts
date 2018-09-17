@@ -1,3 +1,5 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
 import {
   SelectionContext, TransitionContext
@@ -56,13 +58,13 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
   const borderColor = 'currentColor';
   const triangleFill = 'rgb(128, 128, 128)';
 
-  
+
   const colorHandle: any = function(selection: SelectionContext<Datum>) {
 
     const h = height;
     const w = width;
     const c = w / 2;  // corner
-    
+
     let border = selection
       .selectAll<SVGPolygonElement, Datum>('polygon.border')
       .data([null]);
@@ -88,13 +90,13 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
         .attr('class', 'triangle')
         .attr('stroke-width', 0)
         .attr('fill', triangleFill));
-    
+
     triangle.exit().remove();
-    
+
     triangle
       .attr('points',  `0 0, ${c} ${c}, ${-c} ${c}`);
 
-    
+
     const boxPoints = `0 0, ${w} 0, ${w} ${h}, 0 ${h}`;
 
     let bbox = selection
@@ -110,8 +112,8 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
     bbox
       .attr('points', boxPoints)
       .attr('transform', `translate(${-c}, ${c})`);
-    
-    
+
+
     let box = selection
       .selectAll<SVGPolygonElement, Datum>('polygon.box')
       .data(d => [d]);
