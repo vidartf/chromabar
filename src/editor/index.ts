@@ -80,16 +80,6 @@ export interface ChromaEditor {
 }
 
 
-export interface HandleData {
-  color: string;
-  position: number;
-}
-
-export function handleData(position: number, color: string) {
-  return {color, position};
-}
-
-
 export function chromaEditor(scale?: ColorScale): ChromaEditor {
 
   let orientation: Orientation = 'vertical';
