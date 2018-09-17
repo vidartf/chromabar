@@ -9,11 +9,20 @@ Also includes components for a color map editor.
 
 ## Installation
 
-A typical installation requires the following commands to be run:
+To use the package as a library, install it with:
 
 ```bash
-npm install chromabar
+npm install --save chromabar
 ```
+
+For development, clone the repository and run:
+
+```bash
+npm install     # To install dependencies
+npm run build   # To compile the typescript sources
+npm test        # To run tests
+```
+
 
 ## API
 
