@@ -4,7 +4,8 @@
   "description": "A colorbar for d3 color scales",
   "main": "lib/index.js",
   "files": [
-    "lib/**/*"
+    "lib/**/*",
+    "src/**/*"
   ],
   "scripts": {
     "build": "tsc --project src",
