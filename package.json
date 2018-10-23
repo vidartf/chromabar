@@ -1,6 +1,6 @@
 {
   "name": "chromabar",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A colorbar for d3 color scales",
   "main": "lib/index.js",
   "files": [
