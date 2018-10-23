@@ -16,12 +16,12 @@ import {
 } from 'd3-selection';
 
 import {
-  colorbar, ColorbarAxisScale
+  colorbar
 } from '../colorbar';
 
 import {
-  Orientation, ColorScale, SelectionContext,
-  checkerPattern
+  Orientation, FullColorScale, SelectionContext,
+  checkerPattern, makeAxisScale
 } from '../common';
 
 import {
@@ -44,14 +44,14 @@ export interface ChromaEditor {
   /**
    * Gets the current scale used for color lookup.
    */
-  scale(): ColorScale;
+  scale(): FullColorScale;
 
   /**
    * Sets the scale and returns the color bar.
    *
    * @param scale The scale to be used for color lookup.
    */
-  scale(scale: ColorScale): this;
+  scale(scale: FullColorScale): this;
 
   orientation(): Orientation;
   orientation(orientation: Orientation): this;
@@ -80,7 +80,7 @@ export interface ChromaEditor {
 }
 
 
-export function chromaEditor(scale?: ColorScale): ChromaEditor {
+export function chromaEditor(scale?: FullColorScale): ChromaEditor {
 
   let orientation: Orientation = 'vertical';
   let length = 100;
@@ -103,16 +103,10 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
     const ydim = horizontal ? breadth : length;
 
     // Copy, and switch type by changing range (color -> pixels)
-    const extent = horizontal ? [0, length - 1] : [length - 1, 0];
-    // Assume monotonous domain for scale:
-    const domain = scale.domain();
-    const transformer = (scale.copy() as any)
-      .domain([domain[0], domain[domain.length -1]] as any)
-      .range(extent) as ColorbarAxisScale;
-    const axisScale = (scale.copy() as any)
-      .range(domain.map((v) => transformer(v))) as ColorbarAxisScale;
+    const extent: [number, number] = horizontal ? [0, length - 1] : [length - 1, 0];
+    const axisScale = makeAxisScale(scale, extent);
 
-    let colorbarFn = colorbar(scale, axisScale)
+    const colorbarFn = colorbar(scale, axisScale)
       .breadth(breadth)
       .orientation(orientation);
 

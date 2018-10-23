@@ -3,14 +3,20 @@
 
 import { range, extent } from 'd3-array';
 
+import { ScaleOrdinal } from 'd3-scale';
+
+import { AxisDomain } from 'd3-axis';
+
 import {
   SelectionContext, TransitionContext, Orientation, ColorScale,
-  ColorbarAxisScale
+  ColorbarAxisScale, scaleIsOrdinal
 } from './common';
 
 
+export type ColorOrdinalScale = ScaleOrdinal<AxisDomain, string>;
 
-export interface ColorBar {
+
+export interface OrdinalBar {
 
   /**
    * Render the color bar to the given context.
@@ -29,14 +35,14 @@ export interface ColorBar {
   /**
    * Gets the current scale used for color lookup.
    */
-  scale(): ColorScale;
+  scale(): ColorOrdinalScale;
 
   /**
    * Sets the scale and returns the color bar.
    *
    * @param scale The scale to be used for color lookup.
    */
-  scale(scale: ColorScale): this;
+  scale(scale: ColorOrdinalScale): this;
 
   /**
    * Gets the current orientation of the color bar.
@@ -62,58 +68,43 @@ export interface ColorBar {
    */
   breadth(breadth: number): this;
 
-  /**
-   * Gets the current axis scale of the color bar.
-   *
-   * The axis scale should map from the data domain to svg space.
-   */
-  axisScale(): ColorbarAxisScale;
-
-  /**
-   * Sets the current axis scale and returns the color bar.
-   *
-   * The axis scale should map from the data domain to svg space.
-   *
-   * @param breadth The axis scale to use.
-   */
-  axisScale(value: ColorbarAxisScale): this;
-
 }
 
 
-export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): ColorBar {
+export function ordinalBar(scale: ColorOrdinalScale, axisExtent: [number, number]): OrdinalBar {
 
   let orientation: Orientation = 'vertical';
   let breadth = 30;
 
 
-  const colorbar: any = (selection: SelectionContext<unknown>): void => {
-    // Create gradient if missing
-
-    const axisExtent = extent(axisScale.range()) as [number, number];
+  const ordinalBar: any = (selection: SelectionContext<unknown>): void => {
+    // Subdivide area into N rects, where N = domain.length
+    const len = axisExtent[1] - axisExtent[0] + 1;
+    const domain = scale.domain();
+    const N = domain.length;
+    const step = len / N;  // OK if fractional!
 
     // Then draw rects with colors
-    let rects = selection.selectAll<SVGRectElement, unknown>('rect.gradient')
-      .data(range(axisExtent[0], axisExtent[1] + 1));
+    let rects = selection.selectAll<SVGRectElement, unknown>('rect.color')
+      .data(range(axisExtent[0], axisExtent[1] + 1, step));
 
     rects = rects.merge(rects.enter().append<SVGRectElement>('rect')
       .attr('stroke-width', 0)
-      .attr('class', 'gradient'));
+      .attr('class', 'color'));
 
     rects.exit().remove();
 
-    rects
-      .attr('fill', d => scale(axisScale.invert(d)!));
-
     if (orientation === 'horizontal') {
       rects
-        .attr('width', 1)
+        .attr('fill', (d, i) => scale(domain[i]))
+        .attr('width', step)
         .attr('height', breadth)
         .attr('x', d => d)
         .attr('y', 0);
     } else {
       rects
-        .attr('height', 1)
+        .attr('fill', (d, i) => scale(domain[domain.length - i -1]))
+        .attr('height', step)
         .attr('width', breadth)
         .attr('y', d => d)
         .attr('x', 0);
@@ -121,21 +112,17 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
 
   };
 
-  colorbar.scale = function(_: any) {
-    return arguments.length ? (scale = _, colorbar) : scale;
+  ordinalBar.scale = function(_: any) {
+    return arguments.length ? (scale = _, ordinalBar) : scale;
   };
 
-  colorbar.axisScale = function(_: any) {
-    return arguments.length ? (axisScale = _, colorbar) : axisScale;
+  ordinalBar.orientation = function(_) {
+    return arguments.length ? (orientation = _, ordinalBar) : orientation;
   };
 
-  colorbar.orientation = function(_) {
-    return arguments.length ? (orientation = _, colorbar) : orientation;
+  ordinalBar.breadth = function(_: any) {
+    return arguments.length ? (breadth = _, ordinalBar) : breadth;
   };
 
-  colorbar.breadth = function(_: any) {
-    return arguments.length ? (breadth = _, colorbar) : breadth;
-  };
-
-  return colorbar;
+  return ordinalBar;
 }

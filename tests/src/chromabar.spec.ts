@@ -5,9 +5,15 @@ import expect = require('expect.js');
 
 import { JSDOM } from 'jsdom';
 
+import { range } from 'd3-array';
+
 import {
-  scaleLinear
+  scaleLinear, scaleSequential, scaleOrdinal
 } from 'd3-scale'
+
+import {
+  interpolateViridis, schemeAccent
+} from 'd3-scale-chromatic';
 
 import {
   select
@@ -78,7 +84,7 @@ describe('chromabar', () => {
               '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">1.0</text>' +
             '</g>' +
           '</g>' +
-          '</svg></body>'
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
@@ -123,7 +129,7 @@ describe('chromabar', () => {
               '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">1.0</text>' +
             '</g>' +
           '</g>' +
-          '</svg></body>'
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
@@ -169,7 +175,110 @@ describe('chromabar', () => {
               '<line stroke="currentColor" y2="-6"></line><text fill="currentColor" y="-9" dy="0em">1.0</text>' +
             '</g>' +
           '</g>' +
-          '</svg></body>'
+          '</svg>'
+        )).window.document.body;
+    select(bodyActual).select("svg").call(b);
+
+    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+  });
+
+  it('should produce the expected results with a sequential scale', () => {
+    const s = scaleSequential<string>(interpolateViridis);
+    const b = chromabar(s as any)
+      .barLength(10)
+      .tickValues(s.domain());
+
+    var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
+        bodyExpected = (new JSDOM(
+          '<!DOCTYPE html><svg>' +
+          '<g class="colorbar" transform="translate(1, 1)">' +
+            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="10"></rect>' +
+            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="10"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#fde725" height="1" width="30" y="0" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#b5de2b" height="1" width="30" y="1" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#6ece58" height="1" width="30" y="2" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#35b779" height="1" width="30" y="3" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#1f9e89" height="1" width="30" y="4" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#26828e" height="1" width="30" y="5" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#31688e" height="1" width="30" y="6" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#3e4989" height="1" width="30" y="7" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#482878" height="1" width="30" y="8" x="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="#440154" height="1" width="30" y="9" x="0"></rect>' +
+          '</g>' +
+          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(31, 1)">' +
+            '<path class="domain" stroke="currentColor" d="M6,9.5H0.5V0.5H6"></path>' +
+            '<g class="tick" opacity="1" transform="translate(0,9.5)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0.0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,0.5)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">1.0</text>' +
+            '</g>' +
+          '</g>' +
+          '</svg>'
+        )).window.document.body;
+    select(bodyActual).select("svg").call(b);
+
+    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+  });
+
+  it('should produce the expected results with an ordinal scale', () => {
+    const s = scaleOrdinal<number, string>(schemeAccent)
+      .domain(range(10));
+    const b = chromabar(s as any)
+      .barLength(100)
+      .tickValues(s.domain());
+
+    var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
+        bodyExpected = (new JSDOM(
+          '<!DOCTYPE html><svg>' +
+          '<g class="colorbar" transform="translate(1, 1)">' +
+            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="100"></rect>' +
+            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="100"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#beaed4" height="10" width="30" y="0" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#7fc97f" height="10" width="30" y="10" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#666666" height="10" width="30" y="20" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#bf5b17" height="10" width="30" y="30" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#f0027f" height="10" width="30" y="40" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#386cb0" height="10" width="30" y="50" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#ffff99" height="10" width="30" y="60" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#fdc086" height="10" width="30" y="70" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#beaed4" height="10" width="30" y="80" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#7fc97f" height="10" width="30" y="90" x="0"></rect>' +
+          '</g>' +
+          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(31, 1)">' +
+            '<path class="domain" stroke="currentColor" d="M6,99.5H0.5V0.5H6"></path>' +
+            '<g class="tick" opacity="1" transform="translate(0,94.05000000000001)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,84.15)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">1</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,74.25)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">2</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,64.35000000000001)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">3</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,54.45)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">4</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,44.550000000000004)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">5</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,34.650000000000006)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">6</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,24.75)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">7</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,14.850000000000001)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">8</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,4.95)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">9</text>' +
+            '</g>' +
+          '</g>' +
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
