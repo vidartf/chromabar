@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { AxisDomain } from 'd3-axis';
+import { AxisScale, AxisDomain } from 'd3-axis';
 
 import { Selection, TransitionLike } from 'd3-selection';
 
@@ -28,6 +28,19 @@ export interface ColorScale {
 
   copy(): this;
 };
+
+
+
+export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
+
+  domain(): AxisDomain[];
+  domain(value: AxisDomain[]): this;
+
+  range(): number[];
+  range(value: number[]): this;
+
+  invert(value: number | { valueOf(): number }): number;
+}
 
 
 /**
@@ -58,4 +71,36 @@ export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any,
     .attr('d', 'M0,5h10V0h-5v10H0')
     .attr('fill', '#fff');
   path.exit().remove();
+}
+
+
+/**
+ * Given a color scale and a pixel extent, create an axis scale.
+ *
+ * @param scale The color scale (domain -> color string)
+ * @param extent The pixel extent to map to.
+ *
+ * @returns An axis scale (domain -> pixel position)
+ */
+export function makeAxisScale(scale: ColorScale, extent: number[]): ColorbarAxisScale {
+  // Assume monotonous domain for scale:
+  const domain = scale.domain();
+
+  // Check if we can use the type of `scale` as an axis scale
+  let ctor;
+  if (typeof scale.range === 'function' && typeof scale.invert === 'function') {
+    // We can, use copy of scale as basis
+    ctor = scale.copy;
+  } else {
+    // We cannot, use a linear scale
+    ctor = () => { return (scaleLinear() as any).domain(domain) };
+  }
+  // Set up a scale that transfers the first/last domain values to the pixel extremes:
+  const transformer = ctor()
+    .domain([domain[0], domain[domain.length -1]] as any)
+    .range(extent) as ColorbarAxisScale;
+  // Copy the scale, and switch type by setting range (color -> pixels)
+  // We also make sure any intermediate values in the domain get a pixel value
+  return ctor()
+    .range(domain.map((v) => transformer(v))) as ColorbarAxisScale;
 }

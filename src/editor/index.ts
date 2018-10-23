@@ -16,12 +16,12 @@ import {
 } from 'd3-selection';
 
 import {
-  colorbar, ColorbarAxisScale
+  colorbar
 } from '../colorbar';
 
 import {
   Orientation, ColorScale, SelectionContext,
-  checkerPattern
+  checkerPattern, ColorbarAxisScale, makeAxisScale
 } from '../common';
 
 import {
@@ -104,13 +104,7 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
 
     // Copy, and switch type by changing range (color -> pixels)
     const extent = horizontal ? [0, length - 1] : [length - 1, 0];
-    // Assume monotonous domain for scale:
-    const domain = scale.domain();
-    const transformer = (scale.copy() as any)
-      .domain([domain[0], domain[domain.length -1]] as any)
-      .range(extent) as ColorbarAxisScale;
-    const axisScale = (scale.copy() as any)
-      .range(domain.map((v) => transformer(v))) as ColorbarAxisScale;
+    const axisScale = makeAxisScale(scale, extent);
 
     let colorbarFn = colorbar(scale, axisScale)
       .breadth(breadth)

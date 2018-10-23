@@ -3,23 +3,11 @@
 
 import { range, extent } from 'd3-array';
 
-import { AxisScale, AxisDomain } from 'd3-axis';
-
 import {
   SelectionContext, TransitionContext, Orientation, ColorScale,
+  ColorbarAxisScale
 } from './common';
 
-
-export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
-
-  domain(): AxisDomain[];
-  domain(value: AxisDomain[]): this;
-
-  range(): number[];
-  range(value: number[]): this;
-
-  invert(value: number | { valueOf(): number }): number;
-}
 
 
 export interface ColorBar {
