@@ -21,7 +21,7 @@ import {
 
 import {
   Orientation, ColorScale, SelectionContext,
-  checkerPattern, ColorbarAxisScale, makeAxisScale
+  checkerPattern, makeAxisScale
 } from '../common';
 
 import {
@@ -103,10 +103,10 @@ export function chromaEditor(scale?: ColorScale): ChromaEditor {
     const ydim = horizontal ? breadth : length;
 
     // Copy, and switch type by changing range (color -> pixels)
-    const extent = horizontal ? [0, length - 1] : [length - 1, 0];
+    const extent: [number, number] = horizontal ? [0, length - 1] : [length - 1, 0];
     const axisScale = makeAxisScale(scale, extent);
 
-    let colorbarFn = colorbar(scale, axisScale)
+    const colorbarFn = colorbar(scale, axisScale)
       .breadth(breadth)
       .orientation(orientation);
 
