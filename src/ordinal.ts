@@ -94,17 +94,16 @@ export function ordinalBar(scale: ColorOrdinalScale, axisExtent: [number, number
 
     rects.exit().remove();
 
-    rects
-      .attr('fill', (d, i) => scale(domain[i]));
-
     if (orientation === 'horizontal') {
       rects
+        .attr('fill', (d, i) => scale(domain[i]))
         .attr('width', step)
         .attr('height', breadth)
         .attr('x', d => d)
         .attr('y', 0);
     } else {
       rects
+        .attr('fill', (d, i) => scale(domain[domain.length - i -1]))
         .attr('height', step)
         .attr('width', breadth)
         .attr('y', d => d)

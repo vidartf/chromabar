@@ -14,22 +14,28 @@ export type TransitionContext<Datum> = TransitionLike<SVGSVGElement | SVGGElemen
 export type Orientation = 'horizontal' | 'vertical';
 
 
-export interface ColorScale {
+
+export interface ColorScaleBase {
   (value: number | { valueOf(): number }): string;
 
   domain(): AxisDomain[];
   domain(domain: Array<AxisDomain | { valueOf(): AxisDomain }>): this;
 
+  ticks(count?: number): number[];
+  tickFormat(count?: number, specifier?: string): ((d: number | { valueOf(): number }) => string);
+};
+
+export interface ColorScaleOptionals {
   range(): string[];
   range(value: string[]): this;
 
   invert(value: number | { valueOf(): number }): number;
 
-  ticks(count?: number): number[];
-  tickFormat(count?: number, specifier?: string): ((d: number | { valueOf(): number }) => string);
-
   copy(): this;
-};
+}
+
+export type ColorScale = ColorScaleBase & Partial<ColorScaleOptionals>;
+export type FullColorScale = ColorScaleBase & ColorScaleOptionals;
 
 
 

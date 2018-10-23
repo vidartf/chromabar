@@ -6,8 +6,12 @@ import expect = require('expect.js');
 import { JSDOM } from 'jsdom';
 
 import {
-  scaleLinear
+  scaleLinear, scaleSequential
 } from 'd3-scale';
+
+import {
+  interpolateViridis
+} from 'd3-scale-chromatic';
 
 import {
   select
@@ -80,6 +84,32 @@ describe('colorbar', () => {
           '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
           '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
           '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
+          '</g></svg>'
+        )).window.document.body;
+    select(bodyActual).select<SVGGElement>("g").call(b);
+
+    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+  });
+
+  it('should support scaleSequential', () => {
+    const s = scaleSequential(interpolateViridis);
+    const a = scaleLinear()
+      .range([9, 0]);  // 10 px
+    const b = colorbar(s as any, a);
+
+    var bodyActual = (new JSDOM("<!DOCTYPE html><svg><g></g></svg>")).window.document.body,
+        bodyExpected = (new JSDOM(
+          '<!DOCTYPE html><svg><g>' +
+              '<rect stroke-width="0" class="gradient" fill="#fde725" height="1" width="30" y="0" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#b5de2b" height="1" width="30" y="1" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#6ece58" height="1" width="30" y="2" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#35b779" height="1" width="30" y="3" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#1f9e89" height="1" width="30" y="4" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#26828e" height="1" width="30" y="5" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#31688e" height="1" width="30" y="6" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#3e4989" height="1" width="30" y="7" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#482878" height="1" width="30" y="8" x="0"></rect>' +
+              '<rect stroke-width="0" class="gradient" fill="#440154" height="1" width="30" y="9" x="0"></rect>' +
           '</g></svg>'
         )).window.document.body;
     select(bodyActual).select<SVGGElement>("g").call(b);

@@ -20,7 +20,7 @@ import {
 } from '../colorbar';
 
 import {
-  Orientation, ColorScale, SelectionContext,
+  Orientation, FullColorScale, SelectionContext,
   checkerPattern, makeAxisScale
 } from '../common';
 
@@ -44,14 +44,14 @@ export interface ChromaEditor {
   /**
    * Gets the current scale used for color lookup.
    */
-  scale(): ColorScale;
+  scale(): FullColorScale;
 
   /**
    * Sets the scale and returns the color bar.
    *
    * @param scale The scale to be used for color lookup.
    */
-  scale(scale: ColorScale): this;
+  scale(scale: FullColorScale): this;
 
   orientation(): Orientation;
   orientation(orientation: Orientation): this;
@@ -80,7 +80,7 @@ export interface ChromaEditor {
 }
 
 
-export function chromaEditor(scale?: ColorScale): ChromaEditor {
+export function chromaEditor(scale?: FullColorScale): ChromaEditor {
 
   let orientation: Orientation = 'vertical';
   let length = 100;

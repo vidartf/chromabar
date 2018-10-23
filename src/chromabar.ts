@@ -179,7 +179,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     let colorbarFn: ColorBar | OrdinalBar;
     if (scaleIsOrdinal<AxisDomain, string>(scale)) {
-      colorbarFn = ordinalBar(scale, extent);
+      colorbarFn = ordinalBar(scale, [0, length - 1]);
     } else {
       colorbarFn = colorbar(scale, axisScale)
     }
