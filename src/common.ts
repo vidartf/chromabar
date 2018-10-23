@@ -3,6 +3,8 @@
 
 import { AxisScale, AxisDomain } from 'd3-axis';
 
+import { scaleLinear, ScaleOrdinal, scaleBand } from 'd3-scale';
+
 import { Selection, TransitionLike } from 'd3-selection';
 
 export type SelectionContext<Datum> = Selection<SVGSVGElement | SVGGElement, Datum, any, any>;
@@ -74,6 +76,11 @@ export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any,
 }
 
 
+export function scaleIsOrdinal<Domain, Range>(candidate: any): candidate is ScaleOrdinal<Domain, Range> {
+  return candidate && typeof candidate.unknown === 'function';
+}
+
+
 /**
  * Given a color scale and a pixel extent, create an axis scale.
  *
@@ -85,6 +92,12 @@ export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any,
 export function makeAxisScale(scale: ColorScale, extent: number[]): ColorbarAxisScale {
   // Assume monotonous domain for scale:
   const domain = scale.domain();
+
+  if (scaleIsOrdinal(scale)) {
+    return (scaleBand() as any)
+      .domain(scale.domain())
+      .range(extent);
+  }
 
   // Check if we can use the type of `scale` as an axis scale
   let ctor;

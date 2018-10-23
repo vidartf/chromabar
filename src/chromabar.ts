@@ -11,9 +11,11 @@ import { select } from 'd3-selection';
 
 import { colorbar, ColorBar } from './colorbar';
 
+import { ordinalBar, OrdinalBar } from './ordinal';
+
 import {
   SelectionContext, TransitionContext, ColorScale, Orientation,
-  checkerPattern, makeAxisScale
+  checkerPattern, makeAxisScale, scaleIsOrdinal
 } from './common';
 
 
@@ -164,8 +166,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     const xdim = horizontal ? length : breadth;
     const ydim = horizontal ? breadth : length;
 
-    // Copy, and switch type by changing range (color -> pixels)
-    const extent = horizontal ? [0, length - 1] : [length - 1, 0];
+    const extent: [number, number] = horizontal ? [0, length - 1] : [length - 1, 0];
     const axisScale = makeAxisScale(scale, extent);
 
     let axisFn = constructAxis(orientation, side, axisScale)
@@ -176,7 +177,14 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     if (tickValues !== null) axisFn.tickValues(tickValues);
     if (tickFormat !== null) axisFn.tickFormat(tickFormat);
 
-    let colorbarFn = colorbar(scale, axisScale)
+    let colorbarFn: ColorBar | OrdinalBar;
+    if (scaleIsOrdinal<AxisDomain, string>(scale)) {
+      colorbarFn = ordinalBar(scale, extent);
+    } else {
+      colorbarFn = colorbar(scale, axisScale)
+    }
+
+    colorbarFn
       .breadth(breadth)
       .orientation(orientation);
 
