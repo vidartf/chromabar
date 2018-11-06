@@ -21,9 +21,6 @@ import {
 
 const slice = Array.prototype.slice;
 
-const DEFAULT_HORZ_AXIS_PADDING = 30;
-const DEFAULT_VERT_AXIS_PADDING = 100;
-
 
 
 /**
@@ -91,8 +88,11 @@ export interface ChromaBar extends Inherited {
   titlePadding(): number;
   titlePadding(padding: number): this;
 
-  axisPadding(): number | null;
-  axisPadding(padding: number | null): this;
+  axisPadding(): number;
+  axisPadding(padding: number): this;
+
+  padding(): number;
+  padding(padding: number): this;
 
   /**
    * The minimum recommended height for the containing element.
@@ -151,8 +151,9 @@ export function chromabar(scale?: ColorScale): ChromaBar {
   let tickSizeOuter = 6;
   let tickPadding = 3;
   let title: string | null = null;
-  let titlePadding: number = 30;
-  let axisPadding: number | null = null;
+  let titlePadding: number = 5;
+  let axisPadding: number = 5;
+  let padding: number = 5;
 
 
   const chromabar: any = (selection: SelectionContext<unknown>): void => {
@@ -189,6 +190,25 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .orientation(orientation);
 
 
+    // Ensure checker pattern:
+    selection.each(function() {
+      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
+      checkerPattern(svg);
+    });
+
+    // Add axis first to ensure it is lowest in z-order
+    let axisGroup = selection.selectAll('g.axis')
+      .data([null]);
+
+    axisGroup = axisGroup.merge(axisGroup.enter().append('g')
+      .attr('class', 'axis'));
+
+    axisGroup.exit().remove();
+
+    axisGroup
+      .call(axisFn);
+
+
     // Add color bar
     let colorbarGroup = selection.selectAll<SVGGElement, null>('g.colorbar')
       .data([null]);
@@ -208,12 +228,6 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .attr('class', 'background')
       .attr('fill', 'url(#checkerPattern)')
       .attr('stroke-width', 0));
-
-    // Ensure checker pattern:
-    selection.each(function() {
-      const svg = select(this.ownerSVGElement!);
-      checkerPattern(svg);
-    });
 
     bgbox
       .attr('width', xdim)
@@ -239,40 +253,27 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     border.exit().remove();
 
-
-    // Now make an axis
-    let axisGroup = selection.selectAll('g.axis')
-      .data([null]);
-
-    axisGroup = axisGroup.merge(axisGroup.enter().append('g')
-      .attr('class', 'axis'));
-
-    axisGroup.exit().remove();
-
-    axisGroup
-      .call(axisFn);
-
     // Make a title
     let titleGroup = selection.selectAll('g.title')
-      .data(title ? [null] : []);
+      .data(title ? [title] : []);
 
-    titleGroup = titleGroup.merge(titleGroup.enter().append('g')
-      .attr('class', 'title'));
+    const titleGroupEnter = titleGroup.enter().append('g')
+      .attr('class', 'title')
+    titleGroupEnter.append('text')
+      .style('text-anchor', 'middle')
+      .attr('fill', 'currentColor');
+    titleGroup = titleGroup.merge(titleGroupEnter);
 
     titleGroup.exit().remove();
 
-    let titleNode = titleGroup.select('text.title');
-
-    titleNode = titleNode.merge(titleNode.enter().append('text')
-      .attr('class', 'title')
-      .style('text-anchor', 'middle')
-      .attr('fill', 'currentColor'))
-
-    titleNode
+    titleGroup.select('text')
       .text(d => d)
       .attr('transform', function() {
-        const bbox = (this as any).getBBox();
-        return `rotate(${
+        return `translate(${
+          horizontal ? 0.5 * length : 0
+        }, ${
+          horizontal ? 0 : 0.5 * length
+        })rotate(${
           horizontal ? 0 : -90
         })`;
       });
@@ -280,96 +281,99 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     // Calculate translations
 
-    let offset = 0;
-    let axisDim = axisPadding || (horizontal
-      ? DEFAULT_HORZ_AXIS_PADDING
-      : DEFAULT_VERT_AXIS_PADDING);
-    let titleDim = title ? titlePadding : 0;
+    let offset1 = padding;
+    let offset2 = padding + borderThickness;
+    let titlePad = title ? titlePadding : 0;
+
+    let titleSize = 0;
+    let axisSize = 0;
+    let fullLength = length + borderThickness;
 
     if (side === 'topleft') {
       // Add some margin:
-      offset += titleDim;
+      offset1 += titlePad;
 
       // Order: title, axis, colorbar (with border)
       titleGroup
         .attr('transform', function(d) {
+          const bbox = (this as any).getBBox();
+          titleSize = Math.max(titleSize, Math.ceil(horizontal ? bbox.height : bbox.width));
           return `translate(${
-              horizontal ? borderThickness : offset
+              horizontal ? offset2 : offset1 + 0.5 * titleSize
             }, ${
-              horizontal ? offset : borderThickness
+              horizontal ? offset1 + 0.5 * titleSize : offset2
             })`;
         });
 
-      offset += axisDim;
+      offset1 += titleSize + axisPadding;
 
       axisGroup
         .attr('transform', function(d) {
+          const bbox = (this as any).getBBox();
+          axisSize = Math.max(axisSize, Math.ceil(horizontal ? bbox.height : bbox.width));
+          fullLength = Math.max(fullLength, Math.ceil(horizontal ? bbox.width : bbox.height));
           return `translate(${
-            horizontal ? borderThickness : offset
+            horizontal ? offset2 : offset1 + axisSize
           }, ${
-            horizontal ? offset : borderThickness
+            horizontal ? offset1 + axisSize : offset2
           })`;
         });
 
-      offset += borderThickness;
+      offset1 += axisSize + borderThickness;
 
       colorbarGroup
         .attr('transform', `translate(${
-            horizontal ? borderThickness : offset
+            horizontal ? offset2 : offset1
           }, ${
-            horizontal ? offset : borderThickness
+            horizontal ? offset1 : offset2
           })`);
+
+      offset1 += breadth;
     } else {
+      offset1 += borderThickness;
       // Order: colorbar (with border), axis, title
       colorbarGroup
         .attr('transform', function() {
-          return `translate(${borderThickness}, ${borderThickness})`
+          return `translate(${offset1}, ${offset2})`
         });
 
-      offset += borderThickness + breadth;
+      offset1 += breadth;
 
       axisGroup
-        .attr("transform", `translate(${
-            horizontal ? borderThickness : offset
+        .attr("transform", function() {
+          const bbox = (this as any).getBBox();
+          axisSize = Math.max(axisSize, Math.ceil(horizontal ? bbox.height : bbox.width));
+          fullLength = Math.max(fullLength, Math.ceil(horizontal ? bbox.width : bbox.height));
+          return `translate(${
+            horizontal ? offset2 : offset1
           }, ${
-            horizontal ? offset : borderThickness
-          })`);
+            horizontal ? offset1 : offset2
+          })`;
+        });
 
-      offset += axisDim;
+      offset1 += axisPadding + axisSize;
 
       titleGroup
-        .attr("transform", `translate(${
-            horizontal ? borderThickness : offset
+        .attr("transform", function() {
+          const bbox = (this as any).getBBox();
+          titleSize = Math.max(titleSize, Math.ceil(horizontal ? bbox.height : bbox.width));
+          return `translate(${
+            horizontal ? offset2 : offset1 + 0.5 * titleSize
           }, ${
-            horizontal ? offset : borderThickness
-          })`);
-    }
-  };
+            horizontal ? offset1 + 0.5 * titleSize : offset2
+          })`
+        });
 
-  chromabar.minHeight = function(): number {
-    const horizontal = orientation === 'horizontal';
-    let mh = borderThickness;
-    if (horizontal) {
-      const axisDim = axisPadding || DEFAULT_HORZ_AXIS_PADDING;
-      const titleDim = title ? titlePadding : 0;
-      mh += breadth + axisDim + titleDim;
-    } else {
-      mh += length;
+      offset1 += titleSize;
     }
-    return mh;
-  };
 
-  chromabar.minWidth = function(): number {
-    const horizontal = orientation === 'horizontal';
-    let mw = borderThickness;
     if (horizontal) {
-      mw += length;
+      selection.attr('height', offset1 + 2 * padding);
+      selection.attr('width', fullLength + 2 * padding);
     } else {
-      const axisDim = axisPadding || DEFAULT_VERT_AXIS_PADDING;
-      const titleDim = title ? titlePadding : 0;
-      mw += breadth + axisDim + titleDim;
+      selection.attr('height', fullLength + 2 * padding);
+      selection.attr('width', offset1 + 2 * padding);
     }
-    return mw;
   };
 
   chromabar.scale = function(_) {
@@ -406,6 +410,10 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
   chromabar.axisPadding = function(_) {
     return arguments.length ? (axisPadding = _, chromabar) : axisPadding;
+  };
+
+  chromabar.padding = function(_) {
+    return arguments.length ? (padding = _, chromabar) : padding;
   };
 
 

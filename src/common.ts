@@ -63,7 +63,7 @@ export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any,
     .data([null]);
   pattern = pattern.merge(pattern.enter().append<SVGPatternElement>('pattern')
     .attr('id', 'checkerPattern')
-    .attr('viewbox', '0,0,10,10')
+    .attr('viewBox', '0,0,10,10')
     .attr('width', 10)
     .attr('height', 10)
     .attr('patternUnits', 'userSpaceOnUse'));
