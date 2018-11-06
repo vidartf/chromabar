@@ -149,3 +149,6 @@ $RECYCLE.BIN/
 # Coverage data
 # -------------
 **/coverage/
+
+# Demo lock
+demo/package-lock.json
