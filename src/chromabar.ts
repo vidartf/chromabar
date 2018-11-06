@@ -211,7 +211,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     // Ensure checker pattern:
     selection.each(function() {
-      const svg = select(this.ownerSVGElement!);
+      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
       checkerPattern(svg);
     });
 
@@ -254,21 +254,18 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     // Make a title
     let titleGroup = selection.selectAll('g.title')
-      .data(title ? [null] : []);
+      .data(title ? [title] : []);
 
-    titleGroup = titleGroup.merge(titleGroup.enter().append('g')
-      .attr('class', 'title'));
+    const titleGroupEnter = titleGroup.enter().append('g')
+      .attr('class', 'title')
+    titleGroupEnter.append('text')
+      .style('text-anchor', 'middle')
+      .attr('fill', 'currentColor');
+    titleGroup = titleGroup.merge(titleGroupEnter);
 
     titleGroup.exit().remove();
 
-    let titleNode = titleGroup.select('text.title');
-
-    titleNode = titleNode.merge(titleNode.enter().append('text')
-      .attr('class', 'title')
-      .style('text-anchor', 'middle')
-      .attr('fill', 'currentColor'))
-
-    titleNode
+    titleGroup.select('text')
       .text(d => d)
       .attr('transform', function() {
         const bbox = (this as any).getBBox();
