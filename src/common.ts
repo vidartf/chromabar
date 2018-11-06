@@ -52,22 +52,61 @@ export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
 
 
 /**
- *
+ * Create an empty linear gradient.
  */
-export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any, unknown>) {
+export function createGradient(
+  selection: Selection<SVGSVGElement, unknown, any, unknown>,
+  id: string,
+): Selection<SVGLinearGradientElement, null, SVGDefsElement, null> {
   let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
   defs = defs.merge(defs.enter().append('defs'));
   defs.exit().remove();
 
-  let pattern = defs.selectAll<SVGPatternElement, unknown>('pattern#checkerPattern')
+  let gradient = defs.selectAll<SVGLinearGradientElement, unknown>(`linearGradient#${id}`)
+    .data([null]);
+  gradient = gradient.merge(gradient.enter().append<SVGLinearGradientElement>('linearGradient')
+    .attr('id', id));
+  gradient.exit().remove();
+
+  return gradient;
+}
+
+
+/**
+ * Create an empty pattern definition.
+ */
+export function createPattern(
+  selection: Selection<SVGSVGElement, unknown, any, unknown>,
+  id: string,
+  width: number,
+  height: number,
+): Selection<SVGPatternElement, null, SVGDefsElement, null> {
+  let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
+  defs = defs.merge(defs.enter().append('defs'));
+  defs.exit().remove();
+
+  let pattern = defs.selectAll<SVGPatternElement, unknown>(`pattern#${id}`)
     .data([null]);
   pattern = pattern.merge(pattern.enter().append<SVGPatternElement>('pattern')
-    .attr('id', 'checkerPattern')
-    .attr('viewBox', '0,0,10,10')
-    .attr('width', 10)
-    .attr('height', 10)
+    .attr('id', id)
+    .attr('viewBox', `0,0,${width},${height}`)
+    .attr('width', width)
+    .attr('height', height)
     .attr('patternUnits', 'userSpaceOnUse'));
   pattern.exit().remove();
+
+  return pattern;
+}
+
+
+
+/**
+ * Create a 10x10 checker pattern.
+ *
+ * Commonly used as background behind transparent images.
+ */
+export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any, unknown>) {
+  const pattern = createPattern(selection, 'checkerPattern', 10, 10);
 
   let path = pattern.selectAll<SVGPathElement, unknown>('path')
     .data([null]);

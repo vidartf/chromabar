@@ -3,9 +3,11 @@
 
 import { range, extent } from 'd3-array';
 
+import { select } from 'd3-selection';
+
 import {
   SelectionContext, TransitionContext, Orientation, ColorScale,
-  ColorbarAxisScale
+  ColorbarAxisScale, createGradient
 } from './common';
 
 
@@ -80,43 +82,69 @@ export interface ColorBar {
 
 }
 
+let _counter = 0;
 
 export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): ColorBar {
 
   let orientation: Orientation = 'vertical';
   let breadth = 30;
+  const gradId = `chromabar-data-${_counter++}`;
 
 
   const colorbar: any = (selection: SelectionContext<unknown>): void => {
-    // Create gradient if missing
 
+    const horizontal = orientation === 'horizontal';
     const axisExtent = extent(axisScale.range()) as [number, number];
+    const axisSpan = Math.abs(axisExtent[1] + 1 - axisExtent[0]);
 
-    // Then draw rects with colors
-    let rects = selection.selectAll<SVGRectElement, unknown>('rect.gradient')
-      .data(range(axisExtent[0], axisExtent[1] + 1));
+    // Create / update gradient:
+    selection.each(function() {
+      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
+      // Create gradient if missing
+      const grad = createGradient(svg, gradId);
+      // Update with state
+      grad
+        .attr('x1', 0)
+        .attr('y1', 0)
+      if (horizontal) {
+        grad
+          .attr('x2', 1)
+          .attr('y2', 0)
+      } else {
+        grad
+          .attr('x2', 0)
+          .attr('y2', 1)
+      }
+      let stops = grad.selectAll('stop')
+        .data(range(axisExtent[0], axisExtent[1] + 1));
 
-    rects = rects.merge(rects.enter().append<SVGRectElement>('rect')
-      .attr('stroke-width', 0)
-      .attr('class', 'gradient'));
+      stops = stops.merge(stops.enter().append<SVGStopElement>('stop'));
+      stops.exit().remove();
 
-    rects.exit().remove();
+      stops
+        .attr('offset', d => (d + 0.5 - axisExtent[0]) / axisSpan)
+        .attr('stop-color', d => scale(axisScale.invert(d)!));
 
-    rects
-      .attr('fill', d => scale(axisScale.invert(d)!));
+    });
 
-    if (orientation === 'horizontal') {
-      rects
-        .attr('width', 1)
-        .attr('height', breadth)
-        .attr('x', d => d)
-        .attr('y', 0);
+    let rect = selection.selectAll('rect.gradient').data([null]);
+    rect = rect.merge(rect.enter().append('rect')
+      .attr('class', 'gradient')
+      .attr('fill', `url(#${gradId})`));
+    rect.exit().remove();
+
+    if (horizontal) {
+      rect
+        .attr('x', axisExtent[0])
+        .attr('y', 0)
+        .attr('width', axisSpan)
+        .attr('height', breadth);
     } else {
-      rects
-        .attr('height', 1)
+      rect
+        .attr('x', 0)
+        .attr('y', axisExtent[0])
         .attr('width', breadth)
-        .attr('y', d => d)
-        .attr('x', 0);
+        .attr('height', axisSpan);
     }
 
   };

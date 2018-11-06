@@ -112,7 +112,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
 
     // Ensure checker pattern:
     selection.each(function() {
-      const svg = select(this.ownerSVGElement!);
+      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
       checkerPattern(svg);
     });
 
