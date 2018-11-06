@@ -146,7 +146,25 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="22" width="65">' +
+          '<!DOCTYPE html><svg height="22" width="64">' +
+          '<defs>' +
+            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
+          '</defs>' +
+          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
+            '<path class="domain" stroke="currentColor" d="M6,10.5H0.5V0.5H6"></path>' +
+            '<g class="tick" opacity="1" transform="translate(0,10.5)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">-1.0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,5.5)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0.0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,0.5)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">1.0</text>' +
+            '</g>' +
+          '</g>' +
           '<g class="colorbar" transform="translate(6, 6)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="11"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="11"></rect>' +
@@ -161,24 +179,6 @@ describe('chromabar', () => {
             '<rect stroke-width="0" class="gradient" fill="rgb(102, 102, 255)" height="1" width="30" y="8" x="0"></rect>' +
             '<rect stroke-width="0" class="gradient" fill="rgb(51, 51, 255)" height="1" width="30" y="9" x="0"></rect>' +
             '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" height="1" width="30" y="10" x="0"></rect>' +
-          '</g>' +
-          '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
-          '</defs>' +
-          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(37, 6)">' +
-            '<path class="domain" stroke="currentColor" d="M6,10.5H0.5V0.5H6"></path>' +
-            '<g class="tick" opacity="1" transform="translate(0,10.5)">' +
-              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">-1.0</text>' +
-            '</g>' +
-            '<g class="tick" opacity="1" transform="translate(0,5.5)">' +
-              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0.0</text>' +
-            '</g>' +
-            '<g class="tick" opacity="1" transform="translate(0,0.5)">' +
-              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">1.0</text>' +
-            '</g>' +
           '</g>' +
           '</svg>',
           JSDOMOpts
@@ -199,7 +199,25 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="48" width="21">' +
+          '<!DOCTYPE html><svg height="47" width="21">' +
+          '<defs>' +
+            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
+          '</defs>' +
+          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 14)">' +
+            '<path class="domain" stroke="currentColor" d="M0.5,6V0.5H9.5V6"></path>' +
+            '<g class="tick" opacity="1" transform="translate(0.5,0)">' +
+              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">0.0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(5,0)">' +
+              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">0.5</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(9.5,0)">' +
+              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">1.0</text>' +
+            '</g>' +
+          '</g>' +
           '<g class="colorbar" transform="translate(6, 6)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
@@ -213,24 +231,6 @@ describe('chromabar', () => {
             '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
             '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
             '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
-          '</g>' +
-          '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
-          '</defs>' +
-          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 15)">' +
-            '<path class="domain" stroke="currentColor" d="M0.5,6V0.5H9.5V6"></path>' +
-            '<g class="tick" opacity="1" transform="translate(0.5,0)">' +
-              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">0.0</text>' +
-            '</g>' +
-            '<g class="tick" opacity="1" transform="translate(5,0)">' +
-              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">0.5</text>' +
-            '</g>' +
-            '<g class="tick" opacity="1" transform="translate(9.5,0)">' +
-              '<line stroke="currentColor" y2="6"></line><text fill="currentColor" y="9" dy="0.71em">1.0</text>' +
-            '</g>' +
           '</g>' +
           '</svg>',
           JSDOMOpts
@@ -253,20 +253,6 @@ describe('chromabar', () => {
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg height="47" width="21">' +
-          '<g class="colorbar" transform="translate(6, 29)">' +
-            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
-            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="1" height="8" x="0" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="1" height="8" x="1" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="1" height="8" x="2" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="1" height="8" x="3" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="1" height="8" x="4" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="1" height="8" x="5" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="1" height="8" x="6" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
-          '</g>' +
           '<defs>' +
             '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
@@ -285,6 +271,20 @@ describe('chromabar', () => {
               '<line stroke="currentColor" y2="-6"></line><text fill="currentColor" y="-9" dy="0em">1.0</text>' +
             '</g>' +
           '</g>' +
+          '<g class="colorbar" transform="translate(6, 29)">' +
+            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
+            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="1" height="8" x="0" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="1" height="8" x="1" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="1" height="8" x="2" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="1" height="8" x="3" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="1" height="8" x="4" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="1" height="8" x="5" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="1" height="8" x="6" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
+            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
+          '</g>' +
           '</svg>',
           JSDOMOpts
         )).window.document.body;
@@ -301,7 +301,22 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="21" width="64">' +
+          '<!DOCTYPE html><svg height="21" width="63">' +
+          '<defs>' +
+            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
+          '</defs>' +
+          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
+            '<path class="domain" stroke="currentColor" d="M6,9.5H0.5V0.5H6"></path>' +
+            '<g class="tick" opacity="1" transform="translate(0,9.5)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0.0</text>' +
+            '</g>' +
+            '<g class="tick" opacity="1" transform="translate(0,0.5)">' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">1.0</text>' +
+            '</g>' +
+          '</g>' +
           '<g class="colorbar" transform="translate(6, 6)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="10"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="10"></rect>' +
@@ -315,21 +330,6 @@ describe('chromabar', () => {
             '<rect stroke-width="0" class="gradient" fill="#3e4989" height="1" width="30" y="7" x="0"></rect>' +
             '<rect stroke-width="0" class="gradient" fill="#482878" height="1" width="30" y="8" x="0"></rect>' +
             '<rect stroke-width="0" class="gradient" fill="#440154" height="1" width="30" y="9" x="0"></rect>' +
-          '</g>' +
-          '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
-          '</defs>' +
-          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(37, 6)">' +
-            '<path class="domain" stroke="currentColor" d="M6,9.5H0.5V0.5H6"></path>' +
-            '<g class="tick" opacity="1" transform="translate(0,9.5)">' +
-              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0.0</text>' +
-            '</g>' +
-            '<g class="tick" opacity="1" transform="translate(0,0.5)">' +
-              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">1.0</text>' +
-            '</g>' +
           '</g>' +
           '</svg>',
           JSDOMOpts
@@ -348,28 +348,14 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="111" width="62">' +
-          '<g class="colorbar" transform="translate(6, 6)">' +
-            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="100"></rect>' +
-            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="100"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#beaed4" height="10" width="30" y="0" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#7fc97f" height="10" width="30" y="10" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#666666" height="10" width="30" y="20" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#bf5b17" height="10" width="30" y="30" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#f0027f" height="10" width="30" y="40" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#386cb0" height="10" width="30" y="50" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#ffff99" height="10" width="30" y="60" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#fdc086" height="10" width="30" y="70" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#beaed4" height="10" width="30" y="80" x="0"></rect>' +
-            '<rect stroke-width="0" class="color" fill="#7fc97f" height="10" width="30" y="90" x="0"></rect>' +
-          '</g>' +
+          '<!DOCTYPE html><svg height="111" width="61">' +
           '<defs>' +
             '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
           '</defs>' +
-          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(37, 6)">' +
+          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
             '<path class="domain" stroke="currentColor" d="M6,99.5H0.5V0.5H6"></path>' +
             '<g class="tick" opacity="1" transform="translate(0,94.05000000000001)">' +
               '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0</text>' +
@@ -401,6 +387,20 @@ describe('chromabar', () => {
             '<g class="tick" opacity="1" transform="translate(0,4.95)">' +
               '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">9</text>' +
             '</g>' +
+          '</g>' +
+          '<g class="colorbar" transform="translate(6, 6)">' +
+            '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="100"></rect>' +
+            '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="100"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#beaed4" height="10" width="30" y="0" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#7fc97f" height="10" width="30" y="10" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#666666" height="10" width="30" y="20" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#bf5b17" height="10" width="30" y="30" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#f0027f" height="10" width="30" y="40" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#386cb0" height="10" width="30" y="50" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#ffff99" height="10" width="30" y="60" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#fdc086" height="10" width="30" y="70" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#beaed4" height="10" width="30" y="80" x="0"></rect>' +
+            '<rect stroke-width="0" class="color" fill="#7fc97f" height="10" width="30" y="90" x="0"></rect>' +
           '</g>' +
           '</svg>',
           JSDOMOpts

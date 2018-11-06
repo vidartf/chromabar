@@ -190,6 +190,25 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .orientation(orientation);
 
 
+    // Ensure checker pattern:
+    selection.each(function() {
+      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
+      checkerPattern(svg);
+    });
+
+    // Add axis first to ensure it is lowest in z-order
+    let axisGroup = selection.selectAll('g.axis')
+      .data([null]);
+
+    axisGroup = axisGroup.merge(axisGroup.enter().append('g')
+      .attr('class', 'axis'));
+
+    axisGroup.exit().remove();
+
+    axisGroup
+      .call(axisFn);
+
+
     // Add color bar
     let colorbarGroup = selection.selectAll<SVGGElement, null>('g.colorbar')
       .data([null]);
@@ -209,12 +228,6 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .attr('class', 'background')
       .attr('fill', 'url(#checkerPattern)')
       .attr('stroke-width', 0));
-
-    // Ensure checker pattern:
-    selection.each(function() {
-      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
-      checkerPattern(svg);
-    });
 
     bgbox
       .attr('width', xdim)
@@ -239,19 +252,6 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .attr('height', ydim);
 
     border.exit().remove();
-
-
-    // Now make an axis
-    let axisGroup = selection.selectAll('g.axis')
-      .data([null]);
-
-    axisGroup = axisGroup.merge(axisGroup.enter().append('g')
-      .attr('class', 'axis'));
-
-    axisGroup.exit().remove();
-
-    axisGroup
-      .call(axisFn);
 
     // Make a title
     let titleGroup = selection.selectAll('g.title')
@@ -337,7 +337,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
           return `translate(${offset1}, ${offset2})`
         });
 
-      offset1 += borderThickness + breadth;
+      offset1 += breadth;
 
       axisGroup
         .attr("transform", function() {
