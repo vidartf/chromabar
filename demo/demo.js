@@ -15,8 +15,72 @@ import {
   chromabar
 } from 'chromabar';
 
+const fnames = [
+  'lin-rdbu',
+  'lin-div-orgr',
+  'log-rdbu',
+  'pow-rdbu',
+  'lin-viridis',
+  'ord-category10',
+  'ord-oranges5',
+  'lin-div-rdbu-alpha',
+  'ord-alpha',
+];
+
+function save(dataUrl, name) {
+  const link = document.createElement("a");
+  link.download = name;
+  link.href = dataUrl;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function saveAsPng() {
+  const body = select('body');
+  body.selectAll('svg').each(function(d, idx) {
+    const svgString = new XMLSerializer().serializeToString(this);
+    const canvas = document.createElement("canvas");
+    canvas.width = parseInt(this.getAttribute('width') || '0');
+    canvas.height = parseInt(this.getAttribute('height') || '0')
+    var ctx = canvas.getContext("2d");
+
+    var img = new Image();
+    var svg = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+    var url = URL.createObjectURL(svg);
+    img.onload = function() {
+        ctx.drawImage(this, 0, 0);
+        URL.revokeObjectURL(url);
+        const png = canvas.toDataURL("image/png");
+        save(png, fnames[idx]);
+        URL.revokeObjectURL(png);
+    };
+    img.src = url;
+
+  });
+}
+
+function saveAsSvg() {
+  const body = select('body');
+  body.selectAll('svg').each(function(d, idx) {
+    const svgString = new XMLSerializer().serializeToString(this);
+    var svg = new Blob([svgString], {type: "image/svg+xml;charset=utf-8"});
+    var url = URL.createObjectURL(svg);
+    save(url, fnames[idx]);
+    URL.revokeObjectURL(url);
+  });
+}
+
 function initialize() {
   const body = select('body');
+
+  body.append('button')
+    .text('Save as PNGs')
+    .on('click', saveAsPng);
+
+  body.append('button')
+    .text('Save as SVGs')
+    .on('click', saveAsSvg);
 
   body.append('hr');
 
