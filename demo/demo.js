@@ -18,6 +18,8 @@ import {
 function initialize() {
   const body = select('body');
 
+  body.append('hr');
+
   const barLinRdBu =
     chromabar(
       scaleLinear()
@@ -117,6 +119,33 @@ function initialize() {
 
   body.append('div').append('svg')
     .call(barOrdinalOranges);
+
+  body.append('hr');
+
+  const barDivRdBuAlpha =
+    chromabar(
+      scaleLinear()
+        .domain([-1, 0, 1])
+        .range(['rgba(255, 0, 0, 0.5)', 'white', 'rgba(0, 0, 255, 0.5)']))
+    .barLength(500)
+    .orientation('horizontal')
+    .title('Transparent red-white-blue');
+
+  body.append('div').append('svg')
+    .call(barDivRdBuAlpha);
+
+  body.append('hr');
+
+  const barOrdinalAlpha =
+    chromabar(
+      scaleOrdinal(['#c60c', '#0a03', '#0888'])
+        .domain(['H', 'He', 'Li', 'Be', 'B', 'C']))
+    .barLength(300)
+    .orientation('horizontal')
+    .title('Transparent ordinal triplet');
+
+  body.append('div').append('svg')
+    .call(barOrdinalAlpha);
 
   body.append('hr');
 
