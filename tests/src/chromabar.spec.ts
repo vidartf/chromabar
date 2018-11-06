@@ -24,6 +24,9 @@ import {
 } from '../../src/index'
 
 
+const gradId = /chromabar-data-\d+/g;
+
+
 function getBoundingBox(svg: SVGElement) {
   if (svg.attributes['d']) {
     let xmin, xmax, ymin, ymax;
@@ -152,6 +155,19 @@ describe('chromabar', () => {
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
+            '<linearGradient id="chromabar-data" x1="0" y1="0" x2="0" y2="1">' +
+              '<stop offset="0.045454545454545456" stop-color="rgb(255, 0, 0)"></stop>' +
+              '<stop offset="0.13636363636363635" stop-color="rgb(255, 51, 51)"></stop>' +
+              '<stop offset="0.22727272727272727" stop-color="rgb(255, 102, 102)"></stop>' +
+              '<stop offset="0.3181818181818182" stop-color="rgb(255, 153, 153)"></stop>' +
+              '<stop offset="0.4090909090909091" stop-color="rgb(255, 204, 204)"></stop>' +
+              '<stop offset="0.5" stop-color="rgb(255, 255, 255)"></stop>' +
+              '<stop offset="0.5909090909090909" stop-color="rgb(204, 204, 255)"></stop>' +
+              '<stop offset="0.6818181818181818" stop-color="rgb(153, 153, 255)"></stop>' +
+              '<stop offset="0.7727272727272727" stop-color="rgb(102, 102, 255)"></stop>' +
+              '<stop offset="0.8636363636363636" stop-color="rgb(51, 51, 255)"></stop>' +
+              '<stop offset="0.9545454545454546" stop-color="rgb(0, 0, 255)"></stop>' +
+            '</linearGradient>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
             '<path class="domain" stroke="currentColor" d="M6,10.5H0.5V0.5H6"></path>' +
@@ -168,24 +184,15 @@ describe('chromabar', () => {
           '<g class="colorbar" transform="translate(6, 6)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="11"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="11"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" height="1" width="30" y="0" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 51, 51)" height="1" width="30" y="1" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 102, 102)" height="1" width="30" y="2" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 153, 153)" height="1" width="30" y="3" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 204, 204)" height="1" width="30" y="4" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 255, 255)" height="1" width="30" y="5" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(204, 204, 255)" height="1" width="30" y="6" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(153, 153, 255)" height="1" width="30" y="7" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(102, 102, 255)" height="1" width="30" y="8" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(51, 51, 255)" height="1" width="30" y="9" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" height="1" width="30" y="10" x="0"></rect>' +
+            '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="30" height="11"></rect>' +
           '</g>' +
           '</svg>',
           JSDOMOpts
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
+      bodyExpected.outerHTML);
   });
 
   it('should produce the expected results when horizontal', () => {
@@ -205,6 +212,18 @@ describe('chromabar', () => {
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
+            '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
+              '<stop offset="0.05" stop-color="rgb(255, 0, 0)"></stop>' +
+              '<stop offset="0.15" stop-color="rgb(227, 0, 28)"></stop>' +
+              '<stop offset="0.25" stop-color="rgb(198, 0, 57)"></stop>' +
+              '<stop offset="0.35" stop-color="rgb(170, 0, 85)"></stop>' +
+              '<stop offset="0.45" stop-color="rgb(142, 0, 113)"></stop>' +
+              '<stop offset="0.55" stop-color="rgb(113, 0, 142)"></stop>' +
+              '<stop offset="0.65" stop-color="rgb(85, 0, 170)"></stop>' +
+              '<stop offset="0.75" stop-color="rgb(57, 0, 198)"></stop>' +
+              '<stop offset="0.85" stop-color="rgb(28, 0, 227)"></stop>' +
+              '<stop offset="0.95" stop-color="rgb(0, 0, 255)"></stop>' +
+            '</linearGradient>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 14)">' +
             '<path class="domain" stroke="currentColor" d="M0.5,6V0.5H9.5V6"></path>' +
@@ -221,23 +240,15 @@ describe('chromabar', () => {
           '<g class="colorbar" transform="translate(6, 6)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="1" height="8" x="0" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="1" height="8" x="1" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="1" height="8" x="2" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="1" height="8" x="3" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="1" height="8" x="4" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="1" height="8" x="5" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="1" height="8" x="6" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
+            '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="10" height="8"></rect>' +
           '</g>' +
           '</svg>',
           JSDOMOpts
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
+      bodyExpected.outerHTML);
   });
 
   it('should produce the expected results when axis on left side', () => {
@@ -258,6 +269,18 @@ describe('chromabar', () => {
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
+            '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
+            '<stop offset="0.05" stop-color="rgb(255, 0, 0)"></stop>' +
+            '<stop offset="0.15" stop-color="rgb(227, 0, 28)"></stop>' +
+            '<stop offset="0.25" stop-color="rgb(198, 0, 57)"></stop>' +
+            '<stop offset="0.35" stop-color="rgb(170, 0, 85)"></stop>' +
+            '<stop offset="0.45" stop-color="rgb(142, 0, 113)"></stop>' +
+            '<stop offset="0.55" stop-color="rgb(113, 0, 142)"></stop>' +
+            '<stop offset="0.65" stop-color="rgb(85, 0, 170)"></stop>' +
+            '<stop offset="0.75" stop-color="rgb(57, 0, 198)"></stop>' +
+            '<stop offset="0.85" stop-color="rgb(28, 0, 227)"></stop>' +
+            '<stop offset="0.95" stop-color="rgb(0, 0, 255)"></stop>' +
+            '</linearGradient>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 28)">' +
             '<path class="domain" stroke="currentColor" d="M0.5,-6V0.5H9.5V-6"></path>' +
@@ -274,23 +297,15 @@ describe('chromabar', () => {
           '<g class="colorbar" transform="translate(6, 29)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 0, 0)" width="1" height="8" x="0" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(227, 0, 28)" width="1" height="8" x="1" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(198, 0, 57)" width="1" height="8" x="2" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(170, 0, 85)" width="1" height="8" x="3" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(142, 0, 113)" width="1" height="8" x="4" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(113, 0, 142)" width="1" height="8" x="5" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(85, 0, 170)" width="1" height="8" x="6" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(57, 0, 198)" width="1" height="8" x="7" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(28, 0, 227)" width="1" height="8" x="8" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 255)" width="1" height="8" x="9" y="0"></rect>' +
+            '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="10" height="8"></rect>' +
           '</g>' +
           '</svg>',
           JSDOMOpts
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
+      bodyExpected.outerHTML);
   });
 
   it('should produce the expected results with a sequential scale', () => {
@@ -307,6 +322,18 @@ describe('chromabar', () => {
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
+            '<linearGradient id="chromabar-data" x1="0" y1="0" x2="0" y2="1">' +
+              '<stop offset="0.05" stop-color="#fde725"></stop>' +
+              '<stop offset="0.15" stop-color="#b5de2b"></stop>' +
+              '<stop offset="0.25" stop-color="#6ece58"></stop>' +
+              '<stop offset="0.35" stop-color="#35b779"></stop>' +
+              '<stop offset="0.45" stop-color="#1f9e89"></stop>' +
+              '<stop offset="0.55" stop-color="#26828e"></stop>' +
+              '<stop offset="0.65" stop-color="#31688e"></stop>' +
+              '<stop offset="0.75" stop-color="#3e4989"></stop>' +
+              '<stop offset="0.85" stop-color="#482878"></stop>' +
+              '<stop offset="0.95" stop-color="#440154"></stop>' +
+            '</linearGradient>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
             '<path class="domain" stroke="currentColor" d="M6,9.5H0.5V0.5H6"></path>' +
@@ -320,23 +347,15 @@ describe('chromabar', () => {
           '<g class="colorbar" transform="translate(6, 6)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="30" height="10"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="10"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#fde725" height="1" width="30" y="0" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#b5de2b" height="1" width="30" y="1" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#6ece58" height="1" width="30" y="2" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#35b779" height="1" width="30" y="3" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#1f9e89" height="1" width="30" y="4" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#26828e" height="1" width="30" y="5" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#31688e" height="1" width="30" y="6" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#3e4989" height="1" width="30" y="7" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#482878" height="1" width="30" y="8" x="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="#440154" height="1" width="30" y="9" x="0"></rect>' +
+            '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="30" height="10"></rect>' +
           '</g>' +
           '</svg>',
           JSDOMOpts
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
+      bodyExpected.outerHTML);
   });
 
   it('should produce the expected results with an ordinal scale', () => {
@@ -407,7 +426,8 @@ describe('chromabar', () => {
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
+      bodyExpected.outerHTML);
   });
 
 });

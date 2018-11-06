@@ -52,6 +52,27 @@ export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
 
 
 /**
+ * Create an empty linear gradient.
+ */
+export function createGradient(
+  selection: Selection<SVGSVGElement, unknown, any, unknown>,
+  id: string,
+): Selection<SVGLinearGradientElement, null, SVGDefsElement, null> {
+  let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
+  defs = defs.merge(defs.enter().append('defs'));
+  defs.exit().remove();
+
+  let gradient = defs.selectAll<SVGLinearGradientElement, unknown>(`linearGradient#${id}`)
+    .data([null]);
+  gradient = gradient.merge(gradient.enter().append<SVGLinearGradientElement>('linearGradient')
+    .attr('id', id));
+  gradient.exit().remove();
+
+  return gradient;
+}
+
+
+/**
  * Create an empty pattern definition.
  */
 export function createPattern(

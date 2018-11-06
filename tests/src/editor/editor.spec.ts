@@ -6,16 +6,15 @@ import expect = require('expect.js');
 import { JSDOM } from 'jsdom';
 
 import {
-  scaleLinear
-} from 'd3-scale';
-
-import {
   select
 } from 'd3-selection';
 
 import {
   chromaEditor
 } from '../../../src/editor';
+
+
+const gradId = /chromabar-data-\d+/g;
 
 
 describe('chromaEditor', () => {
@@ -37,19 +36,28 @@ describe('chromaEditor', () => {
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg>' +
+          '<defs>' +
+            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
+            '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
+              '<stop offset="0.05" stop-color="rgb(0, 0, 0)"></stop>' +
+              '<stop offset="0.15" stop-color="rgb(28, 28, 28)"></stop>' +
+              '<stop offset="0.25" stop-color="rgb(57, 57, 57)"></stop>' +
+              '<stop offset="0.35" stop-color="rgb(85, 85, 85)"></stop>' +
+              '<stop offset="0.45" stop-color="rgb(113, 113, 113)"></stop>' +
+              '<stop offset="0.55" stop-color="rgb(142, 142, 142)"></stop>' +
+              '<stop offset="0.65" stop-color="rgb(170, 170, 170)"></stop>' +
+              '<stop offset="0.75" stop-color="rgb(198, 198, 198)"></stop>' +
+              '<stop offset="0.85" stop-color="rgb(227, 227, 227)"></stop>' +
+              '<stop offset="0.95" stop-color="rgb(255, 255, 255)"></stop>' +
+            '</linearGradient>' +
+          '</defs>' +
           '<g class="colorbar" transform="translate(1, 1)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="30"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="30"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(0, 0, 0)" width="1" height="30" x="0" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(28, 28, 28)" width="1" height="30" x="1" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(57, 57, 57)" width="1" height="30" x="2" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(85, 85, 85)" width="1" height="30" x="3" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(113, 113, 113)" width="1" height="30" x="4" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(142, 142, 142)" width="1" height="30" x="5" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(170, 170, 170)" width="1" height="30" x="6" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(198, 198, 198)" width="1" height="30" x="7" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(227, 227, 227)" width="1" height="30" x="8" y="0"></rect>' +
-            '<rect stroke-width="0" class="gradient" fill="rgb(255, 255, 255)" width="1" height="30" x="9" y="0"></rect>' +
+            '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="10" height="30"></rect>' +
           '</g>' +
           '<g class="handles">' +
             '<g class="colorHandle" transform="translate(1, 33)">' +
@@ -69,7 +77,8 @@ describe('chromaEditor', () => {
         )).window.document.body;
     select(bodyActual).select<SVGSVGElement>("svg").call(e);
 
-    expect(bodyActual.outerHTML).to.equal(bodyExpected.outerHTML);
+    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
+      bodyExpected.outerHTML);
   });
 
 });
