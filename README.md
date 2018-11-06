@@ -23,6 +23,25 @@ npm run build   # To compile the typescript sources
 npm test        # To run tests
 ```
 
+## Screenshots
+
+Here are some examples of use, as output by the demo:
+
+![Linear red-blue](./img/lin-rdbu.svg)
+
+![Linear, diverging orange-white-green](./img/lin-div-orgr.svg)
+
+![Sequential Viridis](./img/lin-viridis.svg)
+
+![Logarithmic red-blue](./img/log-rdbu.svg)
+
+![Power red-white-blue](./img/pow-rdbu.svg)
+
+![Ordinal Category10](./img/ord-category10.svg)
+
+![Transparent red-white-blue](./img/lin-div-rdbu-alpha.svg)
+
+![Transparent ordinal triplet](./img/ord-alpha.svg)
 
 ## API
 
