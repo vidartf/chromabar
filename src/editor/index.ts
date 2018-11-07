@@ -16,7 +16,7 @@ import {
 } from 'd3-selection';
 
 import {
-  colorbar
+  colorbar, ColorBar
 } from '../colorbar';
 
 import {
@@ -84,6 +84,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
   let onUpdate: ((save: boolean) => void) | null = null;
 
   const handleGen = colorHandle();
+  const colorbarFn = colorbar(null as any, null as any);
 
 
   const chromaEditor: any = (selection: SelectionContext<unknown>): void => {
@@ -108,7 +109,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     const extent: [number, number] = horizontal ? [0, length - 1] : [length - 1, 0];
     const axisScale = makeAxisScale(scale, extent);
 
-    const colorbarFn = colorbar(scale, axisScale)
+    colorbarFn
       .scale(scale)
       .axisScale(axisScale)
       .breadth(breadth)
