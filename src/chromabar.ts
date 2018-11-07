@@ -93,16 +93,6 @@ export interface ChromaBar extends Inherited {
 
   padding(): number;
   padding(padding: number): this;
-
-  /**
-   * The minimum recommended height for the containing element.
-   */
-  minHeight(): number;
-
-  /**
-   * The minimum recommended width for the containing element.
-   */
-  minWidth(): number;
 }
 
 
