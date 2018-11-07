@@ -27,96 +27,6 @@ import { gradId, patternId } from './helpers.spec';
 
 
 
-function getBoundingBox(svg: SVGElement) {
-  if (svg.attributes['d']) {
-    let xmin, xmax, ymin, ymax;
-    let path = svg.attributes['d'].value;
-
-    path = path.replace(/[a-z].*/g," ").replace(/[\sA-Z]+/gi," ").trim();
-
-    const coordinate_list = path.split(" ");
-
-    for (let coordinate of coordinate_list) {
-      if (coordinate.length > 1) {
-        let initial_coordinate = coordinate.split(",");
-        xmin = xmax = initial_coordinate[0];
-        ymin = ymax = initial_coordinate[1];
-        break;
-      }
-    }
-
-    for (let coordinate of coordinate_list) {
-      let xycoord = coordinate.split(",");
-      if (!xycoord[1]) {
-        // ignore relative movements
-        xycoord[0] = xmin;
-        xycoord[1] = ymin;
-      }
-      xmin = Math.min(xmin, xycoord[0]);
-      xmax = Math.max(xmax, xycoord[0]);
-      ymin = Math.min(ymin, xycoord[1]);
-      ymax = Math.max(ymax, xycoord[1]);
-    }
-    return new DOMRect(xmin, ymin, xmax - xmin, ymax - ymin);
-  }
-  if (svg.tagName === 'line') {
-    let x1 = parseFloat(svg.getAttribute('x1') || '0');
-    let x2 = parseFloat(svg.getAttribute('x2') || '0');
-    let y1 = parseFloat(svg.getAttribute('y1') || '0');
-    let y2 = parseFloat(svg.getAttribute('y2') || '0');
-    let xmin = Math.min(x1, x2);
-    let xmax = Math.max(x1, x2);
-    let ymin = Math.min(y1, y2);
-    let ymax = Math.max(y1, y2);
-    return new DOMRect(xmin, ymin, xmax - xmin, ymax - ymin);
-  }
-  if (svg.tagName === 'text') {
-    // Would have to measure text size, just mock it here
-    let x = parseFloat(svg.getAttribute('x') || '0');
-    let y = parseFloat(svg.getAttribute('y') || '0');
-    let dy = parseFloat(
-      (svg.getAttribute('y') || '1em').replace(/em$/, '')
-    );
-    return new DOMRect(x, y, (svg.textContent || '').length, dy);
-  }
-  if (svg.children.length) {
-    let xmin, xmax, ymin, ymax;
-    xmin = ymin = Infinity;
-    xmax = ymax = -Infinity;
-    let validChild = false;
-    for (let child of Array.from(svg.children)) {
-      let cb = getBoundingBox(child as SVGElement);
-      if (cb) {
-        validChild = true;
-        xmin = Math.min(xmin, cb.left);
-        xmax = Math.max(xmax, cb.right);
-        ymin = Math.min(ymin, cb.top);
-        ymax = Math.max(ymax, cb.bottom);
-      }
-    }
-    if (validChild) {
-      return new DOMRect(xmin, ymin, xmax - xmin, ymax - ymin);
-    }
-  }
-  console.log(svg);
-}
-
-const JSDOMOpts = {
-  beforeParse(window) {
-    if (!window.SVGGraphicsElement.prototype.getBBox) {
-      window.SVGGraphicsElement.prototype.getBBox = function() {
-        return getBoundingBox(this);
-      }
-    }
-    if (!window.SVGElement.prototype.getBBox) {
-      window.SVGElement.prototype.getBBox = function() {
-        return getBoundingBox(this);
-      }
-    }
-  }
-}
-
-
 describe('chromabar', () => {
 
   it('should have expected defaults', () => {
@@ -149,7 +59,7 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="22" width="64">' +
+          '<!DOCTYPE html><svg height="22" width="60">' +
           '<defs>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="0" y2="1">' +
               '<stop offset="0.045454545454545456" stop-color="rgb(255, 0, 0)"></stop>' +
@@ -186,8 +96,7 @@ describe('chromabar', () => {
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="11"></rect>' +
             '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="30" height="11"></rect>' +
           '</g>' +
-          '</svg>',
-          JSDOMOpts
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
@@ -211,7 +120,7 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="47" width="21">' +
+          '<!DOCTYPE html><svg height="38" width="21">' +
           '<defs>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
               '<stop offset="0.05" stop-color="rgb(255, 0, 0)"></stop>' +
@@ -247,8 +156,7 @@ describe('chromabar', () => {
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
             '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="10" height="8"></rect>' +
           '</g>' +
-          '</svg>',
-          JSDOMOpts
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
@@ -273,7 +181,7 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="47" width="21">' +
+          '<!DOCTYPE html><svg height="38" width="21">' +
           '<defs>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
             '<stop offset="0.05" stop-color="rgb(255, 0, 0)"></stop>' +
@@ -292,7 +200,7 @@ describe('chromabar', () => {
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
           '</defs>' +
-          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 28)">' +
+          '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 19)">' +
             '<path class="domain" stroke="currentColor" d="M0.5,-6V0.5H9.5V-6"></path>' +
             '<g class="tick" opacity="1" transform="translate(0.5,0)">' +
               '<line stroke="currentColor" y2="-6"></line><text fill="currentColor" y="-9" dy="0em">0.0</text>' +
@@ -304,13 +212,12 @@ describe('chromabar', () => {
               '<line stroke="currentColor" y2="-6"></line><text fill="currentColor" y="-9" dy="0em">1.0</text>' +
             '</g>' +
           '</g>' +
-          '<g class="colorbar" transform="translate(6, 29)">' +
+          '<g class="colorbar" transform="translate(6, 20)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="8"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="8"></rect>' +
             '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="10" height="8"></rect>' +
           '</g>' +
-          '</svg>',
-          JSDOMOpts
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
@@ -331,7 +238,7 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="21" width="63">' +
+          '<!DOCTYPE html><svg height="21" width="60">' +
           '<defs>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="0" y2="1">' +
               '<stop offset="0.05" stop-color="#fde725"></stop>' +
@@ -364,8 +271,7 @@ describe('chromabar', () => {
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="30" height="10"></rect>' +
             '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="30" height="10"></rect>' +
           '</g>' +
-          '</svg>',
-          JSDOMOpts
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
@@ -387,7 +293,7 @@ describe('chromabar', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg height="111" width="61">' +
+          '<!DOCTYPE html><svg height="111" width="60">' +
           '<defs>' +
             '<pattern id="checkerPattern" class="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
@@ -441,8 +347,7 @@ describe('chromabar', () => {
             '<rect stroke-width="0" class="color" fill="#beaed4" height="10" width="30" y="80" x="0"></rect>' +
             '<rect stroke-width="0" class="color" fill="#7fc97f" height="10" width="30" y="90" x="0"></rect>' +
           '</g>' +
-          '</svg>',
-          JSDOMOpts
+          '</svg>'
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 

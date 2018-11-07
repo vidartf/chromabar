@@ -18,6 +18,10 @@ import {
   ensureCheckerPattern, makeAxisScale, scaleIsOrdinal
 } from './common';
 
+import {
+  getBBox
+} from './svghelp';
+
 
 const slice = Array.prototype.slice;
 
@@ -127,6 +131,7 @@ function constructAxis<Domain extends AxisDomain>(
   }
 }
 
+
 export function chromabar(scale?: ColorScale): ChromaBar {
 
   let orientation: Orientation = 'vertical';
@@ -202,10 +207,10 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .orientation(orientation);
 
     // Add axis first to ensure it is lowest in z-order
-    let axisGroup = selection.selectAll('g.axis')
+    let axisGroup = selection.selectAll<SVGGElement, null>('g.axis')
       .data([null]);
 
-    axisGroup = axisGroup.merge(axisGroup.enter().append('g')
+    axisGroup = axisGroup.merge(axisGroup.enter().append<SVGGElement>('g')
       .attr('class', 'axis'));
 
     axisGroup.exit().remove();
@@ -262,10 +267,10 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     border.exit().remove();
 
     // Make a title
-    let titleGroup = selection.selectAll('g.title')
+    let titleGroup = selection.selectAll<SVGGElement, string>('g.title')
       .data(title ? [title] : []);
 
-    const titleGroupEnter = titleGroup.enter().append('g')
+    const titleGroupEnter = titleGroup.enter().append<SVGGElement>('g')
       .attr('class', 'title')
     titleGroupEnter.append('text')
       .style('text-anchor', 'middle')
@@ -303,8 +308,8 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
       // Order: title, axis, colorbar (with border)
       titleGroup
-        .attr('transform', function(d) {
-          const bbox = (this as any).getBBox();
+        .attr('transform', function() {
+          const bbox = getBBox(this);
           titleSize = Math.max(titleSize, Math.ceil(horizontal ? bbox.height : bbox.width));
           return `translate(${
               horizontal ? offset2 : offset1 + 0.5 * titleSize
@@ -316,8 +321,8 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       offset1 += titleSize + axisPadding;
 
       axisGroup
-        .attr('transform', function(d) {
-          const bbox = (this as any).getBBox();
+        .attr('transform', function() {
+          const bbox = getBBox(this);
           axisSize = Math.max(axisSize, Math.ceil(horizontal ? bbox.height : bbox.width));
           fullLength = Math.max(fullLength, Math.ceil(horizontal ? bbox.width : bbox.height));
           return `translate(${
@@ -349,7 +354,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
       axisGroup
         .attr("transform", function() {
-          const bbox = (this as any).getBBox();
+          const bbox = getBBox(this);
           axisSize = Math.max(axisSize, Math.ceil(horizontal ? bbox.height : bbox.width));
           fullLength = Math.max(fullLength, Math.ceil(horizontal ? bbox.width : bbox.height));
           return `translate(${
@@ -363,7 +368,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
       titleGroup
         .attr("transform", function() {
-          const bbox = (this as any).getBBox();
+          const bbox = getBBox(this);
           titleSize = Math.max(titleSize, Math.ceil(horizontal ? bbox.height : bbox.width));
           return `translate(${
             horizontal ? offset2 : offset1 + 0.5 * titleSize
