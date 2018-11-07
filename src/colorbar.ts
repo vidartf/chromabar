@@ -7,7 +7,7 @@ import { select } from 'd3-selection';
 
 import {
   SelectionContext, TransitionContext, Orientation, ColorScale,
-  ColorbarAxisScale, createGradient
+  ColorbarAxisScale, createGradient, generateSvgID
 } from './common';
 
 
@@ -82,13 +82,12 @@ export interface ColorBar {
 
 }
 
-let _counter = 0;
 
 export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): ColorBar {
 
   let orientation: Orientation = 'vertical';
   let breadth = 30;
-  const gradId = `chromabar-data-${_counter++}`;
+  const gradId = generateSvgID('chromabar-data');
 
 
   const colorbar: any = (selection: SelectionContext<unknown>): void => {

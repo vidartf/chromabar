@@ -2,12 +2,9 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  SelectionContext, TransitionContext
+  SelectionContext, TransitionContext, ensureCheckerPattern
 } from '../common';
-
-import {
-  colorbar
-} from '../colorbar';
+import { select } from 'd3-selection';
 
 
 export
@@ -65,6 +62,13 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
     const w = width;
     const c = w / 2;  // corner
 
+    // Ensure defs on top for readability
+    selection.each(function() {
+      const defs = select(this.ownerSVGElement || this).selectAll('defs').data([null]);
+      defs.exit().remove();
+      defs.enter().append('defs');
+    });
+
     let border = selection
       .selectAll<SVGPolygonElement, Datum>('polygon.border')
       .data([null]);
@@ -105,7 +109,10 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
     bbox = bbox.merge(bbox.enter().append<SVGPolygonElement>('polygon')
       .attr('class', 'bbox')
       .attr('stroke-width', 0)
-      .attr('fill', 'url(#checkerPattern)'));
+      .attr('fill', function() {
+        const svg = select(this.ownerSVGElement!);
+        return `url(#${ensureCheckerPattern(svg)})`
+      }));
 
     bbox.exit().remove();
 

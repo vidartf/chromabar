@@ -68,6 +68,18 @@ export interface OrdinalBar {
    */
   breadth(breadth: number): this;
 
+  /**
+   * Gets the current axis extent of the color bar.
+   */
+  axisExtent(): number;
+
+  /**
+   * Sets the current axis extent and returns the color bar.
+   *
+   * @param axisExtent The axis extent to use.
+   */
+  axisExtent(axisExtent: [number, number]): this;
+
 }
 
 
@@ -122,6 +134,10 @@ export function ordinalBar(scale: ColorOrdinalScale, axisExtent: [number, number
 
   ordinalBar.breadth = function(_: any) {
     return arguments.length ? (breadth = _, ordinalBar) : breadth;
+  };
+
+  ordinalBar.axisExtent = function(_: any) {
+    return arguments.length ? (axisExtent = _, ordinalBar) : axisExtent;
   };
 
   return ordinalBar;

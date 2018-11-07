@@ -15,7 +15,7 @@ import { ordinalBar, OrdinalBar } from './ordinal';
 
 import {
   SelectionContext, TransitionContext, ColorScale, Orientation,
-  checkerPattern, makeAxisScale, scaleIsOrdinal
+  ensureCheckerPattern, makeAxisScale, scaleIsOrdinal
 } from './common';
 
 
@@ -145,12 +145,22 @@ export function chromabar(scale?: ColorScale): ChromaBar {
   let axisPadding: number = 5;
   let padding: number = 5;
 
+  let _colorbar: ColorBar | null = null;
+  let _ordinalbar: OrdinalBar | null = null;
+
 
   const chromabar: any = (selection: SelectionContext<unknown>): void => {
     if (scale === undefined) {
       scale = scaleLinear<string>()
         .range(['black', 'white']);
     }
+
+    // Ensure defs on top for readability
+    selection.each(function() {
+      const defs = select(this.ownerSVGElement || this).selectAll('defs').data([null]);
+      defs.exit().remove();
+      defs.enter().append('defs');
+    });
 
     const horizontal = orientation === 'horizontal';
 
@@ -170,21 +180,26 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
     let colorbarFn: ColorBar | OrdinalBar;
     if (scaleIsOrdinal<AxisDomain, string>(scale)) {
-      colorbarFn = ordinalBar(scale, [0, length - 1]);
+      if (_ordinalbar === null) {
+        colorbarFn = _ordinalbar = ordinalBar(scale, [0, length - 1])
+      } else {
+        colorbarFn = _ordinalbar
+          .scale(scale)
+          .axisExtent([0, length - 1]);
+      }
     } else {
-      colorbarFn = colorbar(scale, axisScale)
+      if (_colorbar === null) {
+        colorbarFn = _colorbar = colorbar(scale, axisScale)
+      } else {
+        colorbarFn = _colorbar
+          .scale(scale)
+          .axisScale(axisScale);
+      }
     }
 
     colorbarFn
       .breadth(breadth)
       .orientation(orientation);
-
-
-    // Ensure checker pattern:
-    selection.each(function() {
-      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
-      checkerPattern(svg);
-    });
 
     // Add axis first to ensure it is lowest in z-order
     let axisGroup = selection.selectAll('g.axis')
@@ -214,9 +229,12 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     // Color bar background
     let bgbox = colorbarGroup.selectAll('rect.background')
       .data([null]);
-    bgbox = bgbox.merge(bgbox.enter().insert('rect', 'rect')
+    bgbox = bgbox.merge(bgbox.enter().insert<SVGRectElement>('rect', 'rect')
       .attr('class', 'background')
-      .attr('fill', 'url(#checkerPattern)')
+      .attr('fill', function() {
+        const svg = select(this.ownerSVGElement!);
+        return `url(#${ensureCheckerPattern(svg)})`
+      })
       .attr('stroke-width', 0));
 
     bgbox

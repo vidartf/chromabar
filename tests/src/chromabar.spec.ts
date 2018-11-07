@@ -23,8 +23,8 @@ import {
   chromabar
 } from '../../src/index'
 
+import { gradId, patternId } from './helpers.spec';
 
-const gradId = /chromabar-data-\d+/g;
 
 
 function getBoundingBox(svg: SVGElement) {
@@ -151,10 +151,6 @@ describe('chromabar', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg height="22" width="64">' +
           '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="0" y2="1">' +
               '<stop offset="0.045454545454545456" stop-color="rgb(255, 0, 0)"></stop>' +
               '<stop offset="0.13636363636363635" stop-color="rgb(255, 51, 51)"></stop>' +
@@ -168,6 +164,10 @@ describe('chromabar', () => {
               '<stop offset="0.8636363636363636" stop-color="rgb(51, 51, 255)"></stop>' +
               '<stop offset="0.9545454545454546" stop-color="rgb(0, 0, 255)"></stop>' +
             '</linearGradient>' +
+            '<pattern id="checkerPattern" class="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
             '<path class="domain" stroke="currentColor" d="M6,10.5H0.5V0.5H6"></path>' +
@@ -191,8 +191,13 @@ describe('chromabar', () => {
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
-      bodyExpected.outerHTML);
+    expect(
+      bodyActual.outerHTML
+        .replace(gradId, 'chromabar-data')
+        .replace(patternId, 'checkerPattern')
+      ).to.equal(
+        bodyExpected.outerHTML
+      );
   });
 
   it('should produce the expected results when horizontal', () => {
@@ -208,10 +213,6 @@ describe('chromabar', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg height="47" width="21">' +
           '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
               '<stop offset="0.05" stop-color="rgb(255, 0, 0)"></stop>' +
               '<stop offset="0.15" stop-color="rgb(227, 0, 28)"></stop>' +
@@ -224,6 +225,10 @@ describe('chromabar', () => {
               '<stop offset="0.85" stop-color="rgb(28, 0, 227)"></stop>' +
               '<stop offset="0.95" stop-color="rgb(0, 0, 255)"></stop>' +
             '</linearGradient>' +
+            '<pattern id="checkerPattern" class="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 14)">' +
             '<path class="domain" stroke="currentColor" d="M0.5,6V0.5H9.5V6"></path>' +
@@ -247,8 +252,13 @@ describe('chromabar', () => {
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
-      bodyExpected.outerHTML);
+    expect(
+      bodyActual.outerHTML
+        .replace(gradId, 'chromabar-data')
+        .replace(patternId, 'checkerPattern')
+      ).to.equal(
+        bodyExpected.outerHTML
+      );
   });
 
   it('should produce the expected results when axis on left side', () => {
@@ -265,10 +275,6 @@ describe('chromabar', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg height="47" width="21">' +
           '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
             '<stop offset="0.05" stop-color="rgb(255, 0, 0)"></stop>' +
             '<stop offset="0.15" stop-color="rgb(227, 0, 28)"></stop>' +
@@ -281,6 +287,10 @@ describe('chromabar', () => {
             '<stop offset="0.85" stop-color="rgb(28, 0, 227)"></stop>' +
             '<stop offset="0.95" stop-color="rgb(0, 0, 255)"></stop>' +
             '</linearGradient>' +
+            '<pattern id="checkerPattern" class="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="middle" transform="translate(6, 28)">' +
             '<path class="domain" stroke="currentColor" d="M0.5,-6V0.5H9.5V-6"></path>' +
@@ -304,8 +314,13 @@ describe('chromabar', () => {
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
-      bodyExpected.outerHTML);
+    expect(
+      bodyActual.outerHTML
+        .replace(gradId, 'chromabar-data')
+        .replace(patternId, 'checkerPattern')
+      ).to.equal(
+        bodyExpected.outerHTML
+      );
   });
 
   it('should produce the expected results with a sequential scale', () => {
@@ -318,10 +333,6 @@ describe('chromabar', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg height="21" width="63">' +
           '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="0" y2="1">' +
               '<stop offset="0.05" stop-color="#fde725"></stop>' +
               '<stop offset="0.15" stop-color="#b5de2b"></stop>' +
@@ -334,6 +345,10 @@ describe('chromabar', () => {
               '<stop offset="0.85" stop-color="#482878"></stop>' +
               '<stop offset="0.95" stop-color="#440154"></stop>' +
             '</linearGradient>' +
+            '<pattern id="checkerPattern" class="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
           '</defs>' +
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
             '<path class="domain" stroke="currentColor" d="M6,9.5H0.5V0.5H6"></path>' +
@@ -354,8 +369,13 @@ describe('chromabar', () => {
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
-      bodyExpected.outerHTML);
+    expect(
+      bodyActual.outerHTML
+        .replace(gradId, 'chromabar-data')
+        .replace(patternId, 'checkerPattern')
+      ).to.equal(
+        bodyExpected.outerHTML
+      );
   });
 
   it('should produce the expected results with an ordinal scale', () => {
@@ -369,7 +389,7 @@ describe('chromabar', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg height="111" width="61">' +
           '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+            '<pattern id="checkerPattern" class="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
               '<path d="M0,0v10h10V0" fill="#555"></path>' +
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
@@ -426,8 +446,13 @@ describe('chromabar', () => {
         )).window.document.body;
     select(bodyActual).select("svg").call(b);
 
-    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
-      bodyExpected.outerHTML);
+    expect(
+      bodyActual.outerHTML
+        .replace(gradId, 'chromabar-data')
+        .replace(patternId, 'checkerPattern')
+      ).to.equal(
+        bodyExpected.outerHTML
+      );
   });
 
 });

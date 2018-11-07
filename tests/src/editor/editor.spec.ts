@@ -5,16 +5,11 @@ import expect = require('expect.js');
 
 import { JSDOM } from 'jsdom';
 
-import {
-  select
-} from 'd3-selection';
+import { select } from 'd3-selection';
 
-import {
-  chromaEditor
-} from '../../../src/editor';
+import { chromaEditor } from '../../../src/editor';
 
-
-const gradId = /chromabar-data-\d+/g;
+import { gradId, patternId } from '../helpers.spec';
 
 
 describe('chromaEditor', () => {
@@ -37,10 +32,6 @@ describe('chromaEditor', () => {
         bodyExpected = (new JSDOM(
           '<!DOCTYPE html><svg>' +
           '<defs>' +
-            '<pattern id="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
-              '<path d="M0,0v10h10V0" fill="#555"></path>' +
-              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
-            '</pattern>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
               '<stop offset="0.05" stop-color="rgb(0, 0, 0)"></stop>' +
               '<stop offset="0.15" stop-color="rgb(28, 28, 28)"></stop>' +
@@ -53,6 +44,10 @@ describe('chromaEditor', () => {
               '<stop offset="0.85" stop-color="rgb(227, 227, 227)"></stop>' +
               '<stop offset="0.95" stop-color="rgb(255, 255, 255)"></stop>' +
             '</linearGradient>' +
+            '<pattern id="checkerPattern" class="checkerPattern" viewBox="0,0,10,10" width="10" height="10" patternUnits="userSpaceOnUse">' +
+              '<path d="M0,0v10h10V0" fill="#555"></path>' +
+              '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
+            '</pattern>' +
           '</defs>' +
           '<g class="colorbar" transform="translate(1, 1)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="30"></rect>' +
@@ -77,8 +72,13 @@ describe('chromaEditor', () => {
         )).window.document.body;
     select(bodyActual).select<SVGSVGElement>("svg").call(e);
 
-    expect(bodyActual.outerHTML.replace(gradId, 'chromabar-data')).to.equal(
-      bodyExpected.outerHTML);
+    expect(
+      bodyActual.outerHTML
+        .replace(gradId, 'chromabar-data')
+        .replace(patternId, 'checkerPattern')
+    ).to.equal(
+      bodyExpected.outerHTML
+    );
   });
 
 });

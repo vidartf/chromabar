@@ -21,7 +21,7 @@ import {
 
 import {
   Orientation, FullColorScale, SelectionContext,
-  checkerPattern, makeAxisScale
+  ensureCheckerPattern, makeAxisScale
 } from '../common';
 
 import {
@@ -102,6 +102,13 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     const xdim = horizontal ? length : breadth;
     const ydim = horizontal ? breadth : length;
 
+    // Ensure defs on top for readability
+    selection.each(function() {
+      const defs = select(this.ownerSVGElement || this).selectAll('defs').data([null]);
+      defs.exit().remove();
+      defs.enter().append('defs');
+    });
+
     // Copy, and switch type by changing range (color -> pixels)
     const extent: [number, number] = horizontal ? [0, length - 1] : [length - 1, 0];
     const axisScale = makeAxisScale(scale, extent);
@@ -109,12 +116,6 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     const colorbarFn = colorbar(scale, axisScale)
       .breadth(breadth)
       .orientation(orientation);
-
-    // Ensure checker pattern:
-    selection.each(function() {
-      const svg = select(this.ownerSVGElement || this as SVGSVGElement);
-      checkerPattern(svg);
-    });
 
     // Add color bar
     let colorbarGroup = selection.selectAll<SVGGElement, null>('g.colorbar')
@@ -131,9 +132,12 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     // Color bar background
     let bgbox = colorbarGroup.selectAll('rect.background')
       .data([null]);
-    bgbox = bgbox.merge(bgbox.enter().insert('rect', 'rect')
+    bgbox = bgbox.merge(bgbox.enter().insert<SVGRectElement>('rect', 'rect')
       .attr('class', 'background')
-      .attr('fill', 'url(#checkerPattern)')
+      .attr('fill', function() {
+        const svg = select(this.ownerSVGElement!);
+        return `url(#${ensureCheckerPattern(svg)})`
+      })
       .attr('stroke-width', 0));
 
     bgbox

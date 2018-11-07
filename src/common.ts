@@ -5,7 +5,7 @@ import { AxisScale, AxisDomain } from 'd3-axis';
 
 import { scaleLinear, ScaleOrdinal, scaleBand } from 'd3-scale';
 
-import { Selection, TransitionLike } from 'd3-selection';
+import { Selection, TransitionLike, select } from 'd3-selection';
 
 export type SelectionContext<Datum> = Selection<SVGSVGElement | SVGGElement, Datum, any, any>;
 export type TransitionContext<Datum> = TransitionLike<SVGSVGElement | SVGGElement, Datum>;
@@ -72,52 +72,44 @@ export function createGradient(
 }
 
 
-/**
- * Create an empty pattern definition.
- */
-export function createPattern(
-  selection: Selection<SVGSVGElement, unknown, any, unknown>,
-  id: string,
-  width: number,
-  height: number,
-): Selection<SVGPatternElement, null, SVGDefsElement, null> {
-  let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
-  defs = defs.merge(defs.enter().append('defs'));
-  defs.exit().remove();
+const svgIDs = {};
 
-  let pattern = defs.selectAll<SVGPatternElement, unknown>(`pattern#${id}`)
-    .data([null]);
-  pattern = pattern.merge(pattern.enter().append<SVGPatternElement>('pattern')
-    .attr('id', id)
-    .attr('viewBox', `0,0,${width},${height}`)
-    .attr('width', width)
-    .attr('height', height)
-    .attr('patternUnits', 'userSpaceOnUse'));
-  pattern.exit().remove();
-
-  return pattern;
+export function generateSvgID(prefix: string = '') {
+  svgIDs[prefix] = (svgIDs[prefix] || 0) + 1;
+  return `${prefix}-${svgIDs[prefix]}`;
 }
-
 
 
 /**
  * Create a 10x10 checker pattern.
  *
  * Commonly used as background behind transparent images.
+ *
+ * @returns The id of the pattern
  */
-export function checkerPattern(selection: Selection<SVGSVGElement, unknown, any, unknown>) {
-  const pattern = createPattern(selection, 'checkerPattern', 10, 10);
+export function ensureCheckerPattern(selection: Selection<SVGSVGElement, unknown, any, unknown>): string {
+  let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
+  defs = defs.merge(defs.enter().append('defs'));
+  defs.exit().remove();
 
-  let path = pattern.selectAll<SVGPathElement, unknown>('path')
-    .data([null]);
-  let pathEnter = path.enter();
-  pathEnter.append<SVGPathElement>('path')
+  let patterns = defs.selectAll('pattern.checkerPattern').data([null]);
+  patterns.exit().remove();
+  let newPatterns = patterns.enter().append<SVGPatternElement>('pattern')
+    .attr('id', () => generateSvgID('checkerPattern'))
+    .attr('class', 'checkerPattern')
+    .attr('viewBox', '0,0,10,10')
+    .attr('width', 10)
+    .attr('height', 10)
+    .attr('patternUnits', 'userSpaceOnUse');
+
+  newPatterns.append<SVGPathElement>('path')
     .attr('d', 'M0,0v10h10V0')
     .attr('fill', '#555')
-  pathEnter.append<SVGPathElement>('path')
+  newPatterns.append<SVGPathElement>('path')
     .attr('d', 'M0,5h10V0h-5v10H0')
     .attr('fill', '#fff');
-  path.exit().remove();
+
+  return patterns.merge(newPatterns).attr('id');
 }
 
 
