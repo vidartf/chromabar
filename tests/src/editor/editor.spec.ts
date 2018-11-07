@@ -30,7 +30,7 @@ describe('chromaEditor', () => {
 
     var bodyActual = (new JSDOM("<!DOCTYPE html><svg></svg>")).window.document.body,
         bodyExpected = (new JSDOM(
-          '<!DOCTYPE html><svg>' +
+          '<!DOCTYPE html><svg height="54" width="22">' +
           '<defs>' +
             '<linearGradient id="chromabar-data" x1="0" y1="0" x2="1" y2="0">' +
               '<stop offset="0.05" stop-color="rgb(0, 0, 0)"></stop>' +
@@ -49,19 +49,19 @@ describe('chromaEditor', () => {
               '<path d="M0,5h10V0h-5v10H0" fill="#fff"></path>' +
             '</pattern>' +
           '</defs>' +
-          '<g class="colorbar" transform="translate(1, 1)">' +
+          '<g class="colorbar" transform="translate(6, 1)">' +
             '<rect class="border" fill="transparent" stroke="currentColor" x="0" y="0" stroke-width="2" width="10" height="30"></rect>' +
             '<rect class="background" fill="url(#checkerPattern)" stroke-width="0" width="10" height="30"></rect>' +
             '<rect class="gradient" fill="url(#chromabar-data)" x="0" y="0" width="10" height="30"></rect>' +
           '</g>' +
           '<g class="handles">' +
-            '<g class="colorHandle" transform="translate(1, 33)">' +
+            '<g class="colorHandle" transform="translate(6, 33)">' +
               '<polygon class="border" stroke="currentColor" stroke-linejoin="round" fill="transparent" stroke-width="2" points="0 0, 5 5, 5 20, -5 20, -5 5"></polygon>' +
               '<polygon class="triangle" stroke-width="0" fill="rgb(128, 128, 128)" points="0 0, 5 5, -5 5"></polygon>' +
               '<polygon class="bbox" stroke-width="0" fill="url(#checkerPattern)" points="0 0, 10 0, 10 15, 0 15" transform="translate(-5, 5)"></polygon>' +
               '<polygon class="box" stroke-width="0" fill="rgb(0, 0, 0)" points="0 0, 10 0, 10 15, 0 15" transform="translate(-5, 5)"></polygon>' +
             '</g>' +
-            '<g class="colorHandle" transform="translate(10, 33)">' +
+            '<g class="colorHandle" transform="translate(15, 33)">' +
               '<polygon class="border" stroke="currentColor" stroke-linejoin="round" fill="transparent" stroke-width="2" points="0 0, 5 5, 5 20, -5 20, -5 5"></polygon>' +
               '<polygon class="triangle" stroke-width="0" fill="rgb(128, 128, 128)" points="0 0, 5 5, -5 5"></polygon>' +
               '<polygon class="bbox" stroke-width="0" fill="url(#checkerPattern)" points="0 0, 10 0, 10 15, 0 15" transform="translate(-5, 5)"></polygon>' +

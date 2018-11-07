@@ -40,6 +40,10 @@ export interface ColorHandle<Datum> {
 
   borderThickness(): number;
   borderThickness(borderThickness: number): this;
+
+  fullWidth(): number;
+
+  fullHeight(): number;
 }
 
 
@@ -151,6 +155,14 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
 
   colorHandle.borderThickness = function(_) {
     return arguments.length ? (borderThickness = _, colorHandle) : borderThickness;
+  };
+
+  colorHandle.fullWidth = function() {
+    return width + 2 * borderThickness;
+  };
+
+  colorHandle.fullHeight = function() {
+    return height + 0.5 * width + 2 * borderThickness;
   };
 
   return colorHandle;

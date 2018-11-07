@@ -65,18 +65,12 @@ export interface ChromaEditor {
   borderThickness(): number;
   borderThickness(borderThickness: number): this;
 
+  padding(): number;
+  padding(padding: number): this;
+
   onUpdate(): ((save: boolean) => void) | null;
   onUpdate(value: ((save: boolean) => void) | null): this;
 
-  /**
-   * The minimum recommended height for the containing element.
-   */
-  minHeight(): number;
-
-  /**
-   * The minimum recommended width for the containing element.
-   */
-  minWidth(): number;
 }
 
 
@@ -86,6 +80,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
   let length = 100;
   let breadth = 30;
   let borderThickness = 1;
+  let padding = 0;
   let onUpdate: ((save: boolean) => void) | null = null;
 
   const handleGen = colorHandle();
@@ -114,6 +109,8 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     const axisScale = makeAxisScale(scale, extent);
 
     const colorbarFn = colorbar(scale, axisScale)
+      .scale(scale)
+      .axisScale(axisScale)
       .breadth(breadth)
       .orientation(orientation);
 
@@ -181,7 +178,11 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
 
     handleGen.color(scale);
 
-    const offset = borderThickness * 2 + handleGen.borderThickness();
+    const offset = handleGen.borderThickness() + padding + 0.5 * handleGen.width();
+    const handleOffset =
+      padding
+      + borderThickness * 2
+      + handleGen.borderThickness();
 
 
     const dragFn = drag<SVGGElement, AxisDomain>().on('drag', function(d, i) {
@@ -204,15 +205,15 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
         const pos = (axisScale(d) || 0);
         if (horizontal) {
           return `translate(${
-            pos + borderThickness
+            pos + offset
           }, ${
-            breadth + offset
+            breadth + handleOffset
           })`;
         }
         return `translate(${
-          breadth + offset
+          breadth + handleOffset
         }, ${
-          pos + borderThickness
+          pos + offset
         })rotate(-90)`;
       })
       .on('dblclick', function(d, i) {
@@ -224,9 +225,24 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     // Order: colorbar (with border), axis, title
     colorbarGroup
       .attr('transform', function() {
-        return `translate(${borderThickness}, ${borderThickness})`
+        return `translate(${
+          horizontal ? offset : padding + borderThickness
+        }, ${
+          horizontal ? padding + borderThickness: offset
+        })`;
       });
 
+    const hw = handleGen.fullWidth();
+    const hh = handleGen.fullHeight()
+    const fullLength = length + 2 * padding + hw;
+    const fullBreadth = breadth + 2 * padding + 2 * borderThickness + hh;
+    if (horizontal) {
+      selection.attr('height', fullBreadth);
+      selection.attr('width', fullLength);
+    } else {
+      selection.attr('height', fullLength);
+      selection.attr('width', fullBreadth);
+    }
   };
 
   const colorPicker = create<HTMLInputElement>('input')
@@ -246,30 +262,6 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     (colorPicker.node()!).click();
   }
 
-  chromaEditor.minHeight = function(): number {
-    const horizontal = orientation === 'horizontal';
-    const ht = handleGen.borderThickness();
-    let mh = borderThickness + 2 * ht;
-    if (horizontal) {
-      mh += breadth + handleGen.height();
-    } else {
-      mh += length + handleGen.width();
-    }
-    return mh;
-  };
-
-  chromaEditor.minWidth = function(): number {
-    const horizontal = orientation === 'horizontal';
-    const ht = handleGen.borderThickness();
-    let mw = borderThickness + 2 * ht;
-    if (horizontal) {
-      mw += length + handleGen.width();
-    } else {
-      mw += breadth + handleGen.height();
-    }
-    return mw;
-  };
-
   chromaEditor.scale = function(_) {
     return arguments.length ? (scale = _, chromaEditor) : scale;
   };
@@ -288,6 +280,10 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
 
   chromaEditor.borderThickness = function(_) {
     return arguments.length ? (borderThickness = _, chromaEditor) : borderThickness;
+  };
+
+  chromaEditor.padding = function(_) {
+    return arguments.length ? (padding = _, chromaEditor) : padding;
   };
 
   chromaEditor.onUpdate = function(_) {
