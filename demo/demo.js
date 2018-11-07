@@ -12,7 +12,7 @@ import {
 } from 'd3-selection';
 
 import {
-  chromabar
+  chromabar, chromaEditor
 } from 'chromabar';
 
 const fnames = [
@@ -210,6 +210,32 @@ function initialize() {
 
   body.append('div').append('svg')
     .call(barOrdinalAlpha);
+
+  body.append('hr');
+
+  const editorDivLinRdBu = body.append('div');
+  editorDivLinRdBu.append('span')
+    .text('Colormap editor')
+  editorDivLinRdBu.append('br');
+  const editorSvgLinRdBu = editorDivLinRdBu.append('svg');
+
+  const editorLinDivRdBu =
+    chromaEditor(
+      scaleLinear()
+        .domain([-1, 0, 1])
+        .range(['rgba(255, 0, 0, 0.5)', 'white', 'rgba(0, 0, 255, 0.5)']))
+    .barLength(300)
+    .padding(5)
+    .orientation('horizontal')
+    .onUpdate((finished) => {
+      // Queue a re-draw on the next animation frame:
+      requestAnimationFrame(() => {
+        editorSvgLinRdBu.call(editorLinDivRdBu)
+      });
+    });
+
+  // Draw inital view
+  editorSvgLinRdBu.call(editorLinDivRdBu);
 
   body.append('hr');
 
