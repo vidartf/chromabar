@@ -3,7 +3,7 @@ skip_branch_with_pr: true
 
 # environment variables
 environment:
-  nodejs_version: "6.9"
+  nodejs_version: "8.12"
 
 # build cache to preserve files/folders between builds
 cache:

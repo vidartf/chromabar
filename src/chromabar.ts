@@ -202,8 +202,8 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       }
     }
 
-    colorbarFn
-      .breadth(breadth)
+    (colorbarFn
+      .breadth(breadth) as ColorBar | OrdinalBar)
       .orientation(orientation);
 
     // Add axis first to ensure it is lowest in z-order

@@ -1,11 +1,15 @@
 language: node
 sudo: false
+env:
+  - MOZ_HEADLESS=1
+addons:
+  firefox: latest
 cache:
   directories:
     - node_modules # NPM packages
     - $HOME/.npm
 before_install:
-  - nvm install 6
+  - nvm install 8
   - npm install -g codecov
 install:
   - npm install
