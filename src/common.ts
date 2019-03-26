@@ -113,8 +113,29 @@ export function ensureCheckerPattern(selection: Selection<SVGSVGElement, unknown
 }
 
 
+/**
+ * Infer the type of the scale.
+ *
+ * @param scale The scale to check.
+ */
+function checkType(scale: any) {
+  if (scale.range === undefined) {
+    return 'sequential'
+  }
+  const s = scale.copy();
+  if (s.domain([1, 2]).range([1, 2])(1.5) === 1)
+      return 'ordinal';
+  else if (s.domain([1, 2]).range([1, 2]).invert(1.5) === 1.5)
+      return 'linear';
+  else if (s.domain([1, 2]).range([1, 2]).invert(1.5) instanceof Date)
+      return 'time';
+  else
+      return 'not supported';
+}
+
+
 export function scaleIsOrdinal<Domain, Range>(candidate: any): candidate is ScaleOrdinal<Domain, Range> {
-  return candidate && typeof candidate.unknown === 'function';
+  return checkType(candidate) === 'ordinal';
 }
 
 
