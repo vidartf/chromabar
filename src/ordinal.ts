@@ -1,15 +1,14 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { range, extent } from 'd3-array';
+import { range } from 'd3-array';
 
 import { ScaleOrdinal } from 'd3-scale';
 
 import { AxisDomain } from 'd3-axis';
 
 import {
-  SelectionContext, TransitionContext, Orientation, ColorScale,
-  ColorbarAxisScale, scaleIsOrdinal
+  SelectionContext, TransitionContext, Orientation
 } from './common';
 
 
@@ -23,14 +22,14 @@ export interface OrdinalBar {
    *
    * @param context A selection of SVG containers (either SVG or G elements).
    */
-  (context: SelectionContext<unknown>): void;
+  (context: SelectionContext<any>): void;
 
   /**
    * Render the color bar to the given context.
    *
    * @param context A transition defined on SVG containers (either SVG or G elements).
    */
-  (context: TransitionContext<unknown>): void;
+  (context: TransitionContext<any>): void;
 
   /**
    * Gets the current scale used for color lookup.

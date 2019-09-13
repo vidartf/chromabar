@@ -5,7 +5,7 @@ import { AxisScale, AxisDomain } from 'd3-axis';
 
 import { scaleLinear, ScaleOrdinal, scaleBand } from 'd3-scale';
 
-import { Selection, TransitionLike, select } from 'd3-selection';
+import { Selection, TransitionLike } from 'd3-selection';
 
 export type SelectionContext<Datum> = Selection<SVGSVGElement | SVGGElement, Datum, any, any>;
 export type TransitionContext<Datum> = TransitionLike<SVGSVGElement | SVGGElement, Datum>;
@@ -18,8 +18,8 @@ export type Orientation = 'horizontal' | 'vertical';
 export interface ColorScaleBase {
   (value: number | { valueOf(): number }): string;
 
-  domain(): AxisDomain[];
-  domain(domain: Array<AxisDomain | { valueOf(): AxisDomain }>): this;
+  domain(): (number | { valueOf(): number })[];
+  domain(domain: Array<number | { valueOf(): number }>): this;
 
   ticks(count?: number): number[];
   tickFormat(count?: number, specifier?: string): ((d: number | { valueOf(): number }) => string);
@@ -29,7 +29,7 @@ export interface ColorScaleOptionals {
   range(): string[];
   range(value: string[]): this;
 
-  invert(value: number | { valueOf(): number }): number;
+  invert(value: number | { valueOf(): number }): number | { valueOf(): number };
 
   copy(): this;
 }
@@ -55,7 +55,7 @@ export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
  * Create an empty linear gradient.
  */
 export function createGradient(
-  selection: Selection<SVGSVGElement, unknown, any, unknown>,
+  selection: Selection<SVGSVGElement, any, any, unknown>,
   id: string,
 ): Selection<SVGLinearGradientElement, null, SVGDefsElement, null> {
   let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
@@ -87,12 +87,12 @@ export function generateSvgID(prefix: string = '') {
  *
  * @returns The id of the pattern
  */
-export function ensureCheckerPattern(selection: Selection<SVGSVGElement, unknown, any, unknown>): string {
+export function ensureCheckerPattern(selection: Selection<SVGSVGElement, any, any, unknown>): string {
   let defs = selection.selectAll<SVGDefsElement, unknown>('defs').data([null]);
   defs = defs.merge(defs.enter().append('defs'));
   defs.exit().remove();
 
-  let patterns = defs.selectAll('pattern.checkerPattern').data([null]);
+  let patterns = defs.selectAll<SVGPatternElement, unknown>('pattern.checkerPattern').data([null]);
   patterns.exit().remove();
   let newPatterns = patterns.enter().append<SVGPatternElement>('pattern')
     .attr('id', () => generateSvgID('checkerPattern'))

@@ -20,14 +20,14 @@ export interface ColorHandle<Datum> {
    *
    * @param context A selection of SVG containers (either SVG or G elements).
    */
-  (context: SelectionContext<Datum>): void;
+  (context: SelectionContext<any>): void;
 
   /**
    * Render the color bar to the given context.
    *
    * @param context A transition defined on SVG containers (either SVG or G elements).
    */
-  (context: TransitionContext<Datum>): void;
+  (context: TransitionContext<any>): void;
 
   color(): (data: Datum) => string;
   color(color: ((data: Datum) => string) | string): this;
@@ -54,7 +54,7 @@ export function colorHandle<Datum>(): ColorHandle<Datum> {
   let width = 10;
   let height = 15;
   let borderThickness = 1;
-  let color = constant as (data: Datum) => string;
+  let color = constant as (data: Datum) => string; // Not type safe, but as helpful as possible
 
   const borderColor = 'currentColor';
   const triangleFill = 'rgb(128, 128, 128)';

@@ -16,7 +16,7 @@ import {
 } from 'd3-selection';
 
 import {
-  colorbar, ColorBar
+  colorbar
 } from '../colorbar';
 
 import {
@@ -39,7 +39,7 @@ export interface ChromaEditor {
    *
    * @param context A selection of SVG containers (either SVG or G elements).
    */
-  (context: SelectionContext<unknown>): void;
+  (context: SelectionContext<any>): void;
 
   /**
    * Gets the current scale used for color lookup.
@@ -83,7 +83,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
   let padding = 0;
   let onUpdate: ((save: boolean) => void) | null = null;
 
-  const handleGen = colorHandle();
+  const handleGen = colorHandle<number | { valueOf(): number }>();
   const colorbarFn = colorbar(null as any, null as any);
 
 
@@ -116,7 +116,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
       .orientation(orientation);
 
     // Add color bar
-    let colorbarGroup = selection.selectAll<SVGGElement, null>('g.colorbar')
+    let colorbarGroup = selection.selectAll<SVGGElement, unknown>('g.colorbar')
       .data([null]);
 
     colorbarGroup = colorbarGroup.merge(
@@ -128,7 +128,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     colorbarGroup.call(colorbarFn);
 
     // Color bar background
-    let bgbox = colorbarGroup.selectAll('rect.background')
+    let bgbox = colorbarGroup.selectAll<SVGRectElement, null>('rect.background')
       .data([null]);
     bgbox = bgbox.merge(bgbox.enter().insert<SVGRectElement>('rect', 'rect')
       .attr('class', 'background')
@@ -145,7 +145,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
     bgbox.exit().remove();
 
     // Add border around color bar
-    let border = colorbarGroup.selectAll('rect.border')
+    let border = colorbarGroup.selectAll<SVGRectElement, null>('rect.border')
       .data([null]);
 
     border = border.merge(border.enter().insert('rect', 'rect')
@@ -169,7 +169,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
         .attr('class', 'handles'));
 
     let handles = handlesGroup
-      .selectAll<SVGGElement, any>('g.colorHandle')
+      .selectAll<SVGGElement, unknown>('g.colorHandle')
       .data(scale.domain());
 
     handles = handles.merge(handles.enter().append<SVGGElement>('g')
@@ -220,7 +220,7 @@ export function chromaEditor(scale?: FullColorScale): ChromaEditor {
       .on('dblclick', function(d, i) {
         editColor(i);
       })
-      .call(dragFn);
+      .call(dragFn as any); // TODO: Fix typing?
 
 
     // Order: colorbar (with border), axis, title

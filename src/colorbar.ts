@@ -19,14 +19,14 @@ export interface ColorBar {
    *
    * @param context A selection of SVG containers (either SVG or G elements).
    */
-  (context: SelectionContext<unknown>): void;
+  (context: SelectionContext<any>): void;
 
   /**
    * Render the color bar to the given context.
    *
    * @param context A transition defined on SVG containers (either SVG or G elements).
    */
-  (context: TransitionContext<unknown>): void;
+  (context: TransitionContext<any>): void;
 
   /**
    * Gets the current scale used for color lookup.
@@ -114,7 +114,7 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
           .attr('x2', 0)
           .attr('y2', 1)
       }
-      let stops = grad.selectAll('stop')
+      let stops = grad.selectAll<SVGStopElement, unknown>('stop')
         .data(range(axisExtent[0], axisExtent[1] + 1));
 
       stops = stops.merge(stops.enter().append<SVGStopElement>('stop'));
@@ -126,7 +126,7 @@ export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): Color
 
     });
 
-    let rect = selection.selectAll('rect.gradient').data([null]);
+    let rect = selection.selectAll<SVGRectElement, unknown>('rect.gradient').data([null]);
     rect = rect.merge(rect.enter().append('rect')
       .attr('class', 'gradient')
       .attr('fill', `url(#${gradId})`));

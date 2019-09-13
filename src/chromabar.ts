@@ -50,14 +50,14 @@ export interface ChromaBar extends Inherited {
    *
    * @param context A selection of SVG containers (either SVG or G elements).
    */
-  (context: SelectionContext<unknown>): void;
+  (context: SelectionContext<any>): void;
 
   /**
    * Render the color bar to the given context.
    *
    * @param context A transition defined on SVG containers (either SVG or G elements).
    */
-  (context: TransitionContext<unknown>): void;
+  (context: TransitionContext<any>): void;
 
   /**
    * Gets the current scale used for color lookup.
@@ -139,7 +139,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
   let length = 100;
   let breadth = 30;
   let borderThickness = 1;
-  let tickArguments = [];
+  let tickArguments: any[] = [];
   let tickValues: any[] | null = null;
   let tickFormat = null;
   let tickSizeInner = 6;
@@ -207,7 +207,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
       .orientation(orientation);
 
     // Add axis first to ensure it is lowest in z-order
-    let axisGroup = selection.selectAll<SVGGElement, null>('g.axis')
+    let axisGroup = selection.selectAll<SVGGElement, unknown>('g.axis')
       .data([null]);
 
     axisGroup = axisGroup.merge(axisGroup.enter().append<SVGGElement>('g')
@@ -220,7 +220,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
 
 
     // Add color bar
-    let colorbarGroup = selection.selectAll<SVGGElement, null>('g.colorbar')
+    let colorbarGroup = selection.selectAll<SVGGElement, unknown>('g.colorbar')
       .data([null]);
 
     colorbarGroup = colorbarGroup.merge(
@@ -232,7 +232,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     colorbarGroup.call(colorbarFn);
 
     // Color bar background
-    let bgbox = colorbarGroup.selectAll('rect.background')
+    let bgbox = colorbarGroup.selectAll<SVGRectElement, unknown>('rect.background')
       .data([null]);
     bgbox = bgbox.merge(bgbox.enter().insert<SVGRectElement>('rect', 'rect')
       .attr('class', 'background')
@@ -249,7 +249,7 @@ export function chromabar(scale?: ColorScale): ChromaBar {
     bgbox.exit().remove();
 
     // Add border around color bar
-    let border = colorbarGroup.selectAll('rect.border')
+    let border = colorbarGroup.selectAll<SVGRectElement, unknown>('rect.border')
       .data([null]);
 
     border = border.merge(border.enter().insert('rect', 'rect')
