@@ -119,8 +119,8 @@ export function ensureCheckerPattern(selection: Selection<SVGSVGElement, any, an
  * @param scale The scale to check.
  */
 function checkType(scale: any) {
-  if (scale.range === undefined) {
-    return 'sequential'
+  if (scale.invert === undefined) {
+    return 'non-invertable';
   }
   const s = scale.copy();
   if (s.domain([1, 2]).range([1, 2])(1.5) === 1)
