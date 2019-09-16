@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "webpack -p",
-    "start": "http-server -a 127.0.0.1 -o",
+    "start": "http-server -a 127.0.0.1 -o index.html",
     "watch": "webpack --watch"
   },
   "devDependencies": {
