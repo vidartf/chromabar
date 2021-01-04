@@ -22,6 +22,13 @@ module.exports = function (config) {
     singleRun: !config.debug,
     logLevel: config.LOG_INFO,
 
+    customLaunchers: {
+      ChromeCI: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox']
+      }
+    },
+
 
     karmaTypescriptConfig: {
       tsconfig: 'tests/src/tsconfig.json',
