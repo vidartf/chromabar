@@ -82,7 +82,7 @@ describe('chromabar', () => {
           '<g class="axis" fill="none" font-size="10" font-family="sans-serif" text-anchor="start" transform="translate(36, 6)">' +
             '<path class="domain" stroke="currentColor" d="M6,10.5H0.5V0.5H6"></path>' +
             '<g class="tick" opacity="1" transform="translate(0,10.5)">' +
-              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">-1.0</text>' +
+              '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">−1.0</text>' +
             '</g>' +
             '<g class="tick" opacity="1" transform="translate(0,5.5)">' +
               '<line stroke="currentColor" x2="6"></line><text fill="currentColor" x="9" dy="0.32em">0.0</text>' +

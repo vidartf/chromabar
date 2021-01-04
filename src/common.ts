@@ -39,10 +39,10 @@ export type FullColorScale = ColorScaleBase & ColorScaleOptionals;
 
 
 
-export interface ColorbarAxisScale extends AxisScale<AxisDomain> {
+export interface ColorbarAxisScale<Domain=AxisDomain> extends AxisScale<Domain> {
 
-  domain(): AxisDomain[];
-  domain(value: AxisDomain[]): this;
+  domain(): Domain[];
+  domain(value: Domain[]): this;
 
   range(): number[];
   range(value: number[]): this;

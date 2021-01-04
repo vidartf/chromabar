@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { AxisDomain as D3AxisDomain } from 'd3-axis';
+
 import { range, extent } from 'd3-array';
 
 import { select } from 'd3-selection';
@@ -83,7 +85,7 @@ export interface ColorBar {
 }
 
 
-export function colorbar(scale: ColorScale, axisScale: ColorbarAxisScale): ColorBar {
+export function colorbar<AxisDomain=D3AxisDomain>(scale: ColorScale, axisScale: ColorbarAxisScale<AxisDomain>): ColorBar {
 
   let orientation: Orientation = 'vertical';
   let breadth = 30;

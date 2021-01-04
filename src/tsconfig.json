@@ -10,7 +10,6 @@
     "moduleResolution": "node",
     "target": "ES6",
     "outDir": "../lib",
-    "skipLibCheck": true,
     "sourceMap": true
   }
 }
