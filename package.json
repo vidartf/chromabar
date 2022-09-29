@@ -39,7 +39,7 @@
     "@types/expect.js": "^0.3.29",
     "@types/jsdom": "^16.2.5",
     "@types/mocha": "^8.2.0",
-    "d3-scale-chromatic": "^2.0.0",
+    "d3-scale-chromatic": "^3.0.0",
     "expect.js": "^0.3.1",
     "jsdom": "^16.4.0",
     "karma": "^5.2.3",
@@ -56,7 +56,7 @@
     "d3-array": "^2.0.3",
     "d3-axis": "^2.0.0",
     "d3-drag": "^1.2.3",
-    "d3-scale": "^3.1.0",
+    "d3-scale": "^4.0.2",
     "d3-selection": "^1.4.0"
   }
 }
